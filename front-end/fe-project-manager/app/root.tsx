@@ -23,6 +23,14 @@ export const links: Route.LinksFunction = () => [
   },
 ];
 
+export function meta({}: Route.MetaArgs) {
+  return [
+    { title: "GiaSon-PrM" },
+    { name: "description", content: "Welcome to Project Manager of Gia Son" },
+  ];
+}
+
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
