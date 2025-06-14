@@ -1,5 +1,5 @@
-import { Button } from "~/components/ui/button";
 import type { Route } from "../../+types/root";
+import {Link} from "react-router";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -10,7 +10,10 @@ export function meta({}: Route.MetaArgs) {
 
 const HomePage = () => {
   return (
-    <>Root me</>
+    <>
+      <Link to={"/sign-in"}>{"Sign in"}</Link>
+      <Link to={"/sign-up"}>{"Sign up"}</Link>
+    </>
   );
 }
 
