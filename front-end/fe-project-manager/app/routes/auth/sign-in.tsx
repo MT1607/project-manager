@@ -60,14 +60,14 @@ const SignIn = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type={"submit"} className={"w-full"}>
-                                Sign in
+                            <Button type={"submit"} className={"w-full hover:cursor-pointer"}>
+                                Sign In
                             </Button>
                         </form>
                     </Form>
                     <CardFooter>
-                        <div className={"flex justify-center items-center w-full"}>
-                            <p className={"text-muted-foreground text-sm"}>Don&apos;t have an account? <Link to={"/sign-up"}>Sign up</Link></p>
+                        <div className={"flex justify-center items-center w-full mt-5"}>
+                            <p className={"text-muted-foreground text-sm"}>Don&apos;t have an account? <Link className={"text-blue-600"} to={"/sign-up"}>Sign Up</Link></p>
                         </div>
                     </CardFooter>
                 </CardContent>
