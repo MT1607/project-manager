@@ -52,7 +52,10 @@ const SignIn = () => {
                                 name="password"
                                 render={({field})=>(
                                     <FormItem>
-                                        <FormLabel>Password</FormLabel>
+                                        <div className={"flex justify-between items-center"}>
+                                            <FormLabel>Password</FormLabel>
+                                            <Link to={"/forgot-password"} className={"text-blue-600"}>Forgot password</Link>
+                                        </div>
                                         <FormControl>
                                             <Input {...field} placeholder={"password"} type={"password"}/>
                                         </FormControl>
