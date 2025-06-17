@@ -1,11 +1,22 @@
 {
-  "name": "be-project-manager",
+  "name": "be-prm",
   "version": "1.0.0",
-  "description": "Be Project Manager",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "gia-son",
-  "license": "ISC"
+  "author": "gia son",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.0",
+    "morgan": "^1.10.0",
+    "zod": "^3.25.67",
+    "zod-express-middleware": "^1.4.0"
+  }
 }
