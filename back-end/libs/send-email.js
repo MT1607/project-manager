@@ -5,8 +5,6 @@ dotenv.config();
 
 const keyResend = process.env.RESENT_TOKEN || "";
 const resend = new Resend(`${keyResend}`);
-console.log("resend", resend);
-console.log("key resend", keyResend);
 
 const fromEmail = process.env.FROM_EMAIL;
 
