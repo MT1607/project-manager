@@ -11,7 +11,7 @@ app.use(cors({
     origin: process.env.FE_URL,
     allowedHeaders: ['Content-Type', "Authorization"],
 }));
-app.use(morgan('combine'));
+app.use(morgan('dev'));
 
 //connect db
 mongoose.connect(process.env.MONGODB_URI)
