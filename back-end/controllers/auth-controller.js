@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import {Verification} from "../models/verification.js";
 import sendEmail from "../libs/send-email.js";
 import aj from "../libs/arcjet.js";
+import {tr} from "zod/dist/types/v4/locales/index.js";
+import {email} from "zod/v4";
 
 const registerUser = async (req, res) => {
     try {
@@ -31,7 +33,7 @@ const registerUser = async (req, res) => {
             name: name,
         });
 
-        const verifiedToken = jwt.sign({userId: newUser._id, property: "email-verification"}, "MT-1607", {expiresIn: "1h"});
+        const verifiedToken = jwt.sign({userId: newUser._id, key: "email-verification"}, `${process.env.JWT_SECRET}`, {expiresIn: "1h"});
 
         await Verification.create({
             userId: newUser._id,
@@ -59,10 +61,60 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
     try {
 
+
     } catch (e) {
         console.log("Login user", e);
         res.status(500).json({message: "Internal error"});
     }
 }
 
-export {registerUser, loginUser}
+const verifyEmail = async (req, res) => {
+    try {
+        const {token} = req.body;
+
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (!payload) {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const {userId, key} = payload;
+        if (key !== "email-verification") {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const verification = await Verification.findOne({
+            userId,
+            token,
+        });
+
+        if (!verification) {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const isTokenExpired = verification.expiresAt < new Date();
+        if (isTokenExpired) {
+            return res.status(401).json({message: `Token expired`});
+        }
+
+        const user = await User.findById({userId});
+        if (!user) {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        if (user.isEmailVerified) {
+            return res.status(401).json({message: `Email verification already exist`});
+        }
+
+        user.isEmailVerified = true;
+        await user.save();
+
+        await verification.findByIdAndDelete(verification._id);
+        res.status(200).json({message: `Email verified successfully`});
+    } catch (e) {
+        console.log("Verification email error", e);
+        res.status(500).json({message: "Internal error"});
+    }
+}
+
+export {registerUser, loginUser, verifyEmail};

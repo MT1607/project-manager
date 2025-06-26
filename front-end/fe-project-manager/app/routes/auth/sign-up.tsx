@@ -6,13 +6,14 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "~/components/ui/form";
 import {Input} from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import {Link} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {useSignUpMutation} from "~/hooks/use-auth";
 import {toast} from "sonner";
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;
 
 const SignUp = () => {
+    const navigate = useNavigate();
     const form= useForm<SignUpFormData> ({
         resolver: zodResolver(signUpSchema),
         defaultValues: {
@@ -28,7 +29,9 @@ const SignUp = () => {
     const onSubmit = (values: SignUpFormData) => {
         mutate(values, {
             onSuccess: () => {
-                toast.success("Account created successfully.");
+                toast.success("Verify email sent successfully. Please check your email. If don't see email. Please check your spams");
+                form.reset();
+                navigate("/sign-in");
             },
             onError: (error: any) => {
                 const errorMessage = error.response.data.message || "An error occurred.";
