@@ -4,19 +4,17 @@ import jwt from "jsonwebtoken";
 import {Verification} from "../models/verification.js";
 import sendEmail from "../libs/send-email.js";
 import aj from "../libs/arcjet.js";
-import {tr} from "zod/dist/types/v4/locales/index.js";
-import {email} from "zod/v4";
 
 const registerUser = async (req, res) => {
     try {
         const {email, password, name} = req.body;
 
-        const decision = await aj.protect(req, { email }); // Deduct 5 tokens from the bucket
+        const decision = await aj.protect(req, {email}); // Deduct 5 tokens from the bucket
         console.log("Arcjet decision", decision);
 
         if (decision.isDenied()) {
-            res.writeHead(403, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Invalid email address" }));
+            res.writeHead(403, {"Content-Type": "application/json"});
+            res.end(JSON.stringify({message: "Invalid email address"}));
         }
 
         const existingUser = await User.findOne({email});
@@ -33,12 +31,15 @@ const registerUser = async (req, res) => {
             name: name,
         });
 
-        const verifiedToken = jwt.sign({userId: newUser._id, key: "email-verification"}, `${process.env.JWT_SECRET}`, {expiresIn: "1h"});
+        const verifiedToken = jwt.sign({
+            userId: newUser._id,
+            key: "email-verification"
+        }, `${process.env.JWT_SECRET}`, {expiresIn: "1h"});
 
         await Verification.create({
             userId: newUser._id,
             token: verifiedToken,
-            expiresAt: new Date(new Date() + 1 * 60 * 60 * 1000),
+            expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
         })
 
         //TODO: sent email verification
@@ -97,7 +98,7 @@ const verifyEmail = async (req, res) => {
             return res.status(401).json({message: `Token expired`});
         }
 
-        const user = await User.findById({userId});
+        const user = await User.findById(userId);
         if (!user) {
             return res.status(401).json({message: `Unauthorized`});
         }
@@ -109,7 +110,7 @@ const verifyEmail = async (req, res) => {
         user.isEmailVerified = true;
         await user.save();
 
-        await verification.findByIdAndDelete(verification._id);
+        await Verification.findByIdAndDelete(verification._id);
         res.status(200).json({message: `Email verified successfully`});
     } catch (e) {
         console.log("Verification email error", e);
