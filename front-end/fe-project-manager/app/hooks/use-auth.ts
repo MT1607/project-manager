@@ -4,12 +4,18 @@ import {postData} from "~/lib/fetch-utils";
 
 export const useSignUpMutation = () => {
     return useMutation({
-        mutationFn: (data:SignUpFormData) => postData("auth/register", data)
+        mutationFn: (data: SignUpFormData) => postData("auth/register", data)
     })
 }
 
 export const useVerifyEmail = () => {
     return useMutation({
-        mutationFn: (data:{token: string}) => postData("auth/verify-email", data)
+        mutationFn: (data: { token: string }) => postData("auth/verify-email", data)
+    })
+}
+
+export const useLoginUser = () => {
+    return useMutation({
+        mutationFn: (data: { email: string, password: string }) => postData("auth/login", data)
     })
 }

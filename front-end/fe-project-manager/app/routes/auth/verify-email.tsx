@@ -14,9 +14,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         const token = searchParams.get("token");
 
-        if (!token) {
-            setIsSuccess(false);
-        } else {
+        if (token) {
             mutate({token}, {
                 onSuccess: () => {
                     setIsSuccess(true);
@@ -36,12 +34,12 @@ const VerifyEmail = () => {
             <p className={"text-sm text-gray-500"}>Verifying email...</p>
 
             <Card className={"w-full max-w-md"}>
-                <CardHeader>
-                    <Link to={"/sign-in"} className={"flex items-center gap-2 text-sm"}>
-                        <ArrowLeft className={'w-4 h-4 mr-2'}/>
-                        Back to Sign in
-                    </Link>
-                </CardHeader>
+                {/*<CardHeader>*/}
+                {/*    <Link to={"/sign-in"} className={"flex items-center gap-2 text-sm"}>*/}
+                {/*        <ArrowLeft className={'w-4 h-4 mr-2'}/>*/}
+                {/*        Back to Sign in*/}
+                {/*    </Link>*/}
+                {/*</CardHeader>*/}
                 <CardContent>
                     <div className={"flex justify-center items-center flex-col"}>
                         {isVerifying ? (

@@ -5,13 +5,19 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
 import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "~/components/ui/form";
 import {Input} from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import {Link} from "react-router";
+import {Button} from "~/components/ui/button";
+import {Link, useNavigate} from "react-router";
+import {useLoginUser} from "~/hooks/use-auth";
+import {toast} from "sonner";
+import {Loader2} from "lucide-react";
 
 type SignInFormData = z.infer<typeof signInSchema>;
 
 const SignIn = () => {
-    const form= useForm<SignInFormData> ({
+    const navigate = useNavigate();
+    const {mutate, isPending} = useLoginUser()
+
+    const form = useForm<SignInFormData>({
         resolver: zodResolver(signInSchema),
         defaultValues: {
             email: "",
@@ -20,10 +26,20 @@ const SignIn = () => {
     })
 
     const onSubmit = (values: SignInFormData) => {
-        console.log(values);
+        mutate(values, {
+            onSuccess: () => {
+                console.log("sig-in success");
+                navigate("/dashboard");
+            },
+            onError: (error: any) => {
+                const errorMessage = error.response.data.message || "An error occurred.";
+                console.error("Error", error.response.data.message);
+                toast.error(errorMessage);
+            }
+        })
     }
 
-    return(
+    return (
         <div className={"min-h-screen flex items-center justify-center flex-col bg-muted/40 p-4"}>
             <Card className={'max-w-md w-full shadow-xl'}>
                 <CardHeader className={"text-center mb-5"}>
@@ -36,7 +52,7 @@ const SignIn = () => {
                             <FormField
                                 control={form.control}
                                 name="email"
-                                render={({field})=>(
+                                render={({field}) => (
                                     <FormItem>
                                         <FormLabel>Email</FormLabel>
                                         <FormControl>
@@ -50,11 +66,12 @@ const SignIn = () => {
                             <FormField
                                 control={form.control}
                                 name="password"
-                                render={({field})=>(
+                                render={({field}) => (
                                     <FormItem>
                                         <div className={"flex justify-between items-center"}>
                                             <FormLabel>Password</FormLabel>
-                                            <Link to={"/forgot-password"} className={"text-blue-600"}>Forgot password</Link>
+                                            <Link to={"/forgot-password"} className={"text-blue-600"}>Forgot
+                                                password</Link>
                                         </div>
                                         <FormControl>
                                             <Input {...field} placeholder={"password"} type={"password"}/>
@@ -63,14 +80,15 @@ const SignIn = () => {
                                     </FormItem>
                                 )}
                             />
-                            <Button type={"submit"} className={"w-full hover:cursor-pointer"}>
-                                Sign In
+                            <Button type={"submit"} className={"w-full hover:cursor-pointer"} disabled={isPending}>
+                                {isPending ? <Loader2 className={"w-4 h-4 mr-2"}/> : "Sign In"}
                             </Button>
                         </form>
                     </Form>
                     <CardFooter>
                         <div className={"flex justify-center items-center w-full mt-5"}>
-                            <p className={"text-muted-foreground text-sm"}>Don&apos;t have an account? <Link className={"text-blue-600"} to={"/sign-up"}>Sign Up</Link></p>
+                            <p className={"text-muted-foreground text-sm"}>Don&apos;t have an account? <Link
+                                className={"text-blue-600"} to={"/sign-up"}>Sign Up</Link></p>
                         </div>
                     </CardFooter>
                 </CardContent>

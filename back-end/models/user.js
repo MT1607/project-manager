@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, {Schema} from "mongoose";
 
-export const userSchema = new mongoose.Schema({
+export const userSchema = new Schema({
     email: {
         type: String,
         required: true,
@@ -24,7 +24,7 @@ export const userSchema = new mongoose.Schema({
     is2FAEnable: {type: Boolean, default: false},
     twoFAOtp: {type: String, select: false},
     twoFAOtpExpires: {type: String, select: false},
-});
+}, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);
 export default User;

@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
         const isSendEmail = await sendEmail(email, emailSubject, emailBody);
 
         if (!isSendEmail) {
-            return res.status(400).json({message: `Email ${emailSubject} cannot send`});
+            return res.status(500).json({message: `Failed send email verification.`});
         }
 
         res.status(201).json({message: 'Verification email sent to your email. Please check and verify your account'});
@@ -61,8 +61,57 @@ const registerUser = async (req, res) => {
 }
 const loginUser = async (req, res) => {
     try {
+        const {email, password} = req.body;
 
+        const user = await User.findOne({email}).select("+password");
+        if (!user) {
+            return res.status(400).json({message: `User with email ${email} does not exist`});
+        }
 
+        //TODO: check email is verified
+        if (!user.isEmailVerified) {
+            const existingVerification = await Verification.findOne({userId: user._id});
+            if (existingVerification && existingVerification.expiresAt > new Date()) {
+                return res.status(400).json({message: `Email is not verified. Please check and verify your email`});
+            } else {
+                await Verification.findByIdAndDelete(existingVerification._id);
+                const verifiedToken = jwt.sign({
+                    userId: user._id,
+                    key: "email-verification"
+                }, `${process.env.JWT_SECRET}`, {expiresIn: "1h"});
+                await Verification.create({
+                    userId: user._id,
+                    token: verifiedToken,
+                    expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
+                })
+                // send email
+                const verifiedLink = `${process.env.FE_URL}/verify-email?token=${verifiedToken}`;
+                const emailBody = `<p> Click <a href="${verifiedLink}">here</a> to verify your email address.</p>`;
+                const emailSubject = "Verify Email PrM";
+
+                const isSendEmail = await sendEmail(email, emailSubject, emailBody);
+
+                if (!isSendEmail) {
+                    return res.status(500).json({message: `Failed send email verification.`});
+                }
+
+                res.status(201).json({message: 'Verification email sent to your email. Please check and verify your account'});
+            }
+        }
+
+        const passwordIsValid = await bcrypt.compare(password, user.password);
+        if (!passwordIsValid) {
+            return res.status(400).json({message: `Password is incorrect`});
+        }
+
+        const token = jwt.sign({userId: user._id, key: "login"}, `${process.env.JWT_SECRET}`, {expiresIn: "7d"});
+        user.lastLogin = new Date();
+        await user.save();
+        
+        const userData = user.toObject();
+        delete userData.password;
+
+        res.status(201).json({message: 'Login successfully.', token, user: userData});
     } catch (e) {
         console.log("Login user", e);
         res.status(500).json({message: "Internal error"});
