@@ -16,4 +16,14 @@ const loginSchema = z.object({
 const verifyEmailSchema = z.object({
     token: z.string().min(1, "Token is required"),
 })
-export {registerSchema, loginSchema, verifyEmailSchema};
+
+const resetPasswordSchema = z.object({
+    token: z.string().min(1, "Token is required"),
+    newPassword: z.string().min(8, "New password is required"),
+    confirmPassword: z.string().min(8, "Confirm password is required"),
+});
+
+const resetPasswordRequestSchema = z.object({
+    email: z.string().email("Email is required"),
+})
+export {registerSchema, loginSchema, verifyEmailSchema, resetPasswordSchema, resetPasswordRequestSchema};

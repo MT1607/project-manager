@@ -5,6 +5,7 @@ import {Verification} from "../models/verification.js";
 import sendEmail from "../libs/send-email.js";
 import aj from "../libs/arcjet.js";
 import {token} from "morgan";
+import user from "../models/user.js";
 
 const registerUser = async (req, res) => {
     try {
@@ -168,7 +169,7 @@ const verifyEmail = async (req, res) => {
     }
 }
 
-export const resetPasswordRequest = async (req, res) => {
+const resetPasswordRequest = async (req, res) => {
     try {
         const {email} = req.body;
         const user = await User.findOne({email});
@@ -221,4 +222,53 @@ export const resetPasswordRequest = async (req, res) => {
         res.status(500).json({message: "Internal error"});
     }
 }
-export {registerUser, loginUser, verifyEmail, resetPasswordRequest};
+
+const verifyResetPasswordAndResetPassword = async (req, res) => {
+    try {
+        const {token, newPassword, confirmPassword} = req.body;
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        if (!payload) {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const {userId, key} = payload;
+        if (key !== "reset-password") {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const verification = await Verification.findOne({
+            userId,
+            token
+        })
+        if (!verification) {
+            return res.status(401).json({message: `Unauthorized`});
+        }
+
+        const isTokenExpires = verification.expiresAt < new Date();
+        if (!isTokenExpires) {
+            return res.status(401).json({message: `Token expired`});
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(401).json({message: `User not found`});
+        }
+
+        if (newPassword !== confirmPassword) {
+            return res.status(401).json({message: `Passwords do not match`});
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(newPassword, salt);
+
+        user.password = hashPassword;
+        await user.save();
+
+        await Verification.findByIdAndDelete(verification._id);
+        res.status(200).json({message: `Reset password successfully`});
+
+    } catch (e) {
+        res.status(500).json({message: "Internal error"});
+    }
+}
+export {registerUser, loginUser, verifyEmail, resetPasswordRequest, verifyResetPasswordAndResetPassword};
