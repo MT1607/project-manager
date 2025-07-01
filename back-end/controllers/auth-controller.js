@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import {Verification} from "../models/verification.js";
 import sendEmail from "../libs/send-email.js";
 import aj from "../libs/arcjet.js";
+import {token} from "morgan";
 
 const registerUser = async (req, res) => {
     try {
@@ -107,7 +108,7 @@ const loginUser = async (req, res) => {
         const token = jwt.sign({userId: user._id, key: "login"}, `${process.env.JWT_SECRET}`, {expiresIn: "7d"});
         user.lastLogin = new Date();
         await user.save();
-        
+
         const userData = user.toObject();
         delete userData.password;
 
@@ -167,4 +168,57 @@ const verifyEmail = async (req, res) => {
     }
 }
 
-export {registerUser, loginUser, verifyEmail};
+export const resetPasswordRequest = async (req, res) => {
+    try {
+        const {email} = req.body;
+        const user = await User.findOne({email});
+
+        if (!user) {
+            return res.status(400).json({message: `User not found`});
+        }
+
+        if (!user.isEmailVerified) {
+            return res.status(400).json({message: `Please verify your email address.`});
+        }
+
+        const existingVerification = await Verification.findOne({
+            userId: user._id,
+        })
+
+        if (existingVerification && existingVerification.expiresAt > new Date()) {
+            return res.status(400).json({message: `Reset password request already send`});
+        }
+
+        if (existingVerification && existingVerification.expiresAt < new Date()) {
+            await Verification.findByIdAndDelete(existingVerification._id);
+        }
+
+        const resetPasswordToken = jwt.sign({
+            userId: user._id,
+            key: "reset-password"
+        }, process.env.JWT_SECRET, {expiresIn: "15m"});
+
+        await Verification.create({
+            userId: user._id,
+            token: resetPasswordToken,
+            expiresAt: new Date(Date.now() + 15 * 60 * 1000),
+        })
+
+        const resetPasswordLink = `${process.env.FE_URL}/reset-password?token=${resetPasswordToken}`;
+        const emailBody = `<p> Click <a href="${resetPasswordLink}">here</a> to reset your password.</p>`;
+        const emailSubject = "Reset password PrM";
+
+        const isSendEmail = await sendEmail(email, emailSubject, emailBody);
+
+        if (!isSendEmail) {
+            return res.status(500).json({message: `Failed to send email reset password request.`});
+        }
+
+        res.status(200).json({message: 'Reset password request send'});
+
+    } catch (e) {
+        console.log("Reset password request", e);
+        res.status(500).json({message: "Internal error"});
+    }
+}
+export {registerUser, loginUser, verifyEmail, resetPasswordRequest};
