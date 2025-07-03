@@ -244,7 +244,7 @@ const verifyResetPasswordAndResetPassword = async (req, res) => {
             return res.status(401).json({message: `Unauthorized`});
         }
 
-        const isTokenExpires = verification.expiresAt < new Date();
+        const isTokenExpires = verification.expiresAt > new Date();
         if (!isTokenExpires) {
             return res.status(401).json({message: `Token expired`});
         }
