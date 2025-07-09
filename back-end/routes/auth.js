@@ -14,7 +14,6 @@ import {
     verifyEmail,
     verifyResetPasswordAndResetPassword
 } from "../controllers/auth-controller.js";
-import {string, z} from "zod";
 
 const router = express.Router();
 router.post('/register', validateRequest({body: registerSchema}), registerUser);
