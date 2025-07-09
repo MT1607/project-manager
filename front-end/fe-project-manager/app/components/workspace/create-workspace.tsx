@@ -141,9 +141,8 @@ const CreateWorkspace = ({
                             />
                         </div>
                         <DialogFooter>
-                            <Button type={"submit"} disabled={form.formState.isSubmitting}>
-                                {/*{isPending ? "Creating..." : "Create"}*/}
-                                Create
+                            <Button type={"submit"} disabled={isPending}>
+                                {isPending ? "Creating..." : "Create"}
                             </Button>
                         </DialogFooter>
                     </form>
