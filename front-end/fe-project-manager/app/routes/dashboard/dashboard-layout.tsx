@@ -5,6 +5,7 @@ import Header from "~/components/layout/header";
 import {useState} from "react";
 import type {Workspace} from "~/types";
 import SidebarComponent from "~/components/layout/sidebar-component";
+import CreateWorkspace from "~/components/workspace/create-workspace";
 
 const DashboardLayout = () => {
     const {isAuthenticated, isLoading} = useAuth();
@@ -32,7 +33,7 @@ const DashboardLayout = () => {
                 <Header
                     onWorkspaceSelected={handleWorkspaceSelected}
                     selectedWorkspace={null}
-                    onCreateWorkspace={() => setIsCreatingWorkspace(false)}/>
+                    onCreateWorkspace={() => setIsCreatingWorkspace(true)}/>
 
                 <main className={"flex overflow-y-auto h-full w-full"}>
                     <div className={"mx-auto container px-2 sm:px-6 lg:px-8 py-0 md:py-8 w-full h-full"}>
@@ -40,6 +41,8 @@ const DashboardLayout = () => {
                     </div>
                 </main>
             </div>
+
+            <CreateWorkspace isCreatingWorkspace={isCreatingWorkspace} setIsCreatingWorkspace={setIsCreatingWorkspace}/>
         </div>
     )
 }
