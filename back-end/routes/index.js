@@ -5,6 +5,6 @@ import workspaceRoutes from "./workspace.js"
 
 const router = express.Router();
 router.use("/auth", authRoutes);
-router.use("/workspace", workspaceRoutes)
+router.use("/workspaces", workspaceRoutes)
 
 export default router;

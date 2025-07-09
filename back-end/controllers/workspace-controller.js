@@ -15,7 +15,7 @@ const createWorkspace = async (req, res) => {
             }],
         })
 
-        res.status(200).json({message: "Workspace created successfully", workspace})
+        res.status(200).json(workspace)
     } catch (e) {
         console.log("error: ", e);
         res.status(500).json({message: "Internal Server Error"})
