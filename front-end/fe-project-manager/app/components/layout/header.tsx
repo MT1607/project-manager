@@ -11,7 +11,7 @@ import {
     DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import {Avatar, AvatarFallback, AvatarImage} from "~/components/ui/avatar";
-import {Link} from "react-router";
+import {Link, useLoaderData} from "react-router";
 import WorkspaceAvatar from "../workspace/workspace-avatar";
 
 interface HeaderProps {
@@ -26,8 +26,8 @@ const Header = ({
                     onCreateWorkspace,
                 }: HeaderProps) => {
     const {user, logout} = useAuth();
-    const workspace: Workspace[] = [];
-
+    const {workspace} = useLoaderData() as { workspace: Workspace[] };
+    console.log(workspace)
     return (
         <div className={"bg-background sticky top-0 z-40 border-b"}>
             <div

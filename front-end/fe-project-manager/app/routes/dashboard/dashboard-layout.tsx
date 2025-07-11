@@ -6,6 +6,16 @@ import {useState} from "react";
 import type {Workspace} from "~/types";
 import SidebarComponent from "~/components/layout/sidebar-component";
 import CreateWorkspace from "~/components/workspace/create-workspace";
+import {getData} from "~/lib/fetch-utils";
+
+export const clientLoader = async () => {
+    try {
+        const [workspace] = await Promise.all([getData("/workspaces")]);
+        return {workspace}
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 const DashboardLayout = () => {
     const {isAuthenticated, isLoading} = useAuth();
@@ -32,7 +42,7 @@ const DashboardLayout = () => {
                 {/*Header*/}
                 <Header
                     onWorkspaceSelected={handleWorkspaceSelected}
-                    selectedWorkspace={null}
+                    selectedWorkspace={currentWorkspace}
                     onCreateWorkspace={() => setIsCreatingWorkspace(true)}/>
 
                 <main className={"flex overflow-y-auto h-full w-full"}>

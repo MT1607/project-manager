@@ -22,4 +22,15 @@ const createWorkspace = async (req, res) => {
     }
 }
 
-export {createWorkspace}
+const getWorkspaces = async (req, res) => {
+    try {
+        const workspace = await Workspace.find({"members.user": req.user._id}).sort({createdAt: -1});
+        console.log(workspace)
+        res.status(200).json(workspace);
+    } catch (e) {
+        console.log("error: ", e);
+        res.status(500).json({message: "Internal Server Error"})
+    }
+}
+
+export {createWorkspace, getWorkspaces}
