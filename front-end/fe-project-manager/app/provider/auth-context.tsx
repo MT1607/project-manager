@@ -52,7 +52,9 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
             navigate("/sign-in");
         }
         window.addEventListener("force-logout", handleLogout);
-        return window.removeEventListener("force-logout", handleLogout);
+        return () => {
+            window.removeEventListener("force-logout", handleLogout); //
+        };
     }, []);
 
     const login = async (data: any) => {

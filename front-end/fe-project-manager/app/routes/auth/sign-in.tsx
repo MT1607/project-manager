@@ -31,7 +31,6 @@ const SignIn = () => {
         mutate(values, {
             onSuccess: (data) => {
                 login(data);
-                console.log("sig-in success");
                 toast.success("Sign in successfully!");
                 navigate("/dashboard");
             },

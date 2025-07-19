@@ -1,6 +1,6 @@
 import {useAuth} from "~/provider/auth-context";
 import Loader from "~/components/loader";
-import {Navigate, Outlet} from "react-router";
+import {Navigate, Outlet, redirect} from "react-router";
 import Header from "~/components/layout/header";
 import {useState} from "react";
 import type {Workspace} from "~/types";
@@ -12,8 +12,12 @@ export const clientLoader = async () => {
     try {
         const [workspace] = await Promise.all([getData("/workspaces")]);
         return {workspace}
-    } catch (e) {
-        console.log(e)
+    } catch (e: any) {
+        if (e.status === 401) {
+            window.dispatchEvent(new Event("force-logout"));
+            throw redirect("/sign-in");
+        }
+        return {workspace: []};
     }
 }
 
