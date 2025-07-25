@@ -17,7 +17,6 @@ const authMiddleware = async (req, res, next) => {
         req.user = user;
         next();
     } catch (e) {
-        console.log("error middleware: ", e.name);
         if (e.name === "TokenExpiredError") {
             return res.status(401).json({message: "Unauthorized"});
         }

@@ -27,7 +27,6 @@ const Header = ({
                 }: HeaderProps) => {
     const {user, logout} = useAuth();
     const {workspace} = useLoaderData() as { workspace: Workspace[] };
-    console.log(workspace)
     return (
         <div className={"bg-background sticky top-0 z-40 border-b"}>
             <div

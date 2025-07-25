@@ -31,11 +31,35 @@ const workspaceSchema = z.object({
     description: z.string().optional(),
     color: z.string().min(1, "Color is required")
 })
+
+const projectSchema = z.object({
+    title: z.string().min(3, "Title must be at least 3 characters."),
+    description: z.string().optional(),
+    status: z.nativeEnum([
+        "Planning",
+        "In Progress",
+        "On Hold",
+        "Completed",
+        "Cancelled",
+    ]),
+    startDate: z.string(),
+    dueDate: z.string(),
+    members: z
+        .array(
+            z.object({
+                user: z.string(),
+                role: z.enum(["admin", "contributor", "viewer"]),
+            })
+        ).optional(),
+    tags: z.string().optional(),
+});
+
 export {
     registerSchema,
     loginSchema,
     verifyEmailSchema,
     resetPasswordSchema,
     resetPasswordRequestSchema,
-    workspaceSchema
+    workspaceSchema,
+    projectSchema
 };

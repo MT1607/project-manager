@@ -30,7 +30,6 @@ const getWorkspaces = async (req, res) => {
         const workspace = await Workspace.find({
             "members.user": req.user._id,
         }).sort({createdAt: -1});
-        console.log(workspace);
         res.status(200).json(workspace);
     } catch (e) {
         console.log("error: ", e);
@@ -61,10 +60,12 @@ const getWorkspaceProject = async (req, res) => {
             _id: workspaceId,
             "members.user": req.user._id,
         }).populate("members.user", "name email profilePicture");
+
         if (!workspace) {
             return res.status(404).json({message: "Workspace not found"});
         }
-        const projects = await Project.findOne({
+
+        const projects = await Project.find({
             workspace: workspaceId,
             isArchived: false,
             members: {$in: req.user._id}

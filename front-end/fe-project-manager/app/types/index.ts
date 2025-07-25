@@ -99,6 +99,13 @@ export interface Task {
     updateAt: Date;
 }
 
+export interface MemberProps {
+    _id: string;
+    user: User;
+    role: "admin" | "member" | "owner" | "viewer";
+    joinedAt: Date;
+}
+
 // export interface Comment {
 //     text: string;
 //     task: Task;

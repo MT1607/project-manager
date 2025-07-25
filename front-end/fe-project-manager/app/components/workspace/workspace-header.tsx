@@ -65,7 +65,6 @@ const WorkspaceHeader = ({
                     <span className={"text-sm text-muted-foreground"}>Members</span>
                     <div className={"flex space-x-2"}>
                         {members?.map((member) => (
-
                             <>
                                 <Avatar
                                     key={member._id}
@@ -78,7 +77,6 @@ const WorkspaceHeader = ({
                                     <AvatarFallback>{member.user.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                             </>
-
                         ))}
                     </div>
                 </div>
