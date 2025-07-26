@@ -31,7 +31,7 @@ const WorkspaceDetail = () => {
             </div>
         );
     }
-
+    
     return (
         <div className={"space-y-8"}>
             <WorkspaceHeader

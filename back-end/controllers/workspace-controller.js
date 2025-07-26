@@ -68,8 +68,7 @@ const getWorkspaceProject = async (req, res) => {
         const projects = await Project.find({
             workspace: workspaceId,
             isArchived: false,
-            members: {$in: req.user._id}
-        }).populate("tasks", "status").sort({createdAt: -1});
+        }).sort({createdAt: -1});
         res.status(200).json({projects, workspace});
     } catch (e) {
         res.status(500).json({message: "Internal Server Error"});

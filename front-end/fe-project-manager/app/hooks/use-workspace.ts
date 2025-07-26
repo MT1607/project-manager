@@ -17,7 +17,7 @@ const useGetWorkspace = () => {
 
 const useGetWorkspaceId = (workspaceId: string) => {
     return useQuery({
-        queryKey: ["workspace"],
+        queryKey: ["workspace", "projects"],
         queryFn: async () => getData(`/workspaces/${workspaceId}/projects`)
     })
 }
