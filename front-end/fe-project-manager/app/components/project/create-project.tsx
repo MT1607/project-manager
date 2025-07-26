@@ -199,6 +199,7 @@ const CreateProjectDialog = ({
                                                             onSelect={(day) => {
                                                                 field.onChange(day?.toISOString() || undefined);
                                                             }}
+                                                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
@@ -242,6 +243,7 @@ const CreateProjectDialog = ({
                                                             onSelect={(day) => {
                                                                 field.onChange(day?.toISOString() || undefined);
                                                             }}
+                                                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
