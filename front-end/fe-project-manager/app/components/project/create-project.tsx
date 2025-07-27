@@ -38,8 +38,8 @@ import {Calendar} from "~/components/ui/calendar";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
 import {Checkbox} from "~/components/ui/checkbox";
-import useCreateProject from "~/hooks/use-project";
 import {toast} from "sonner";
+import {useCreateProject} from "~/hooks/use-project";
 
 interface CreateProjectDialogProps {
     isOpen: boolean;

@@ -135,3 +135,9 @@ export interface MemberProps {
 //     createdAt: Date;
 //     updatedAt: Date;
 // }
+
+export enum ProjectMemberRole {
+    MANAGER = "manager",
+    CONTRIBUTOR = "contributor",
+    VIEWER = "viewer",
+}
