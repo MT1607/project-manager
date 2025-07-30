@@ -1,5 +1,5 @@
 import {BackButton} from "~/components/back-button";
-import {CreateTaskDialog} from "~/components/task.create-task-dialog";
+import {CreateTaskDialog} from "~/components/create-task-dialog";
 import {Badge} from "~/components/ui/badge";
 import {Button} from "~/components/ui/button";
 import {Card, CardHeader} from "~/components/ui/card";
@@ -96,9 +96,9 @@ const ProjectDetails = () => {
                             </TabsTrigger>
                         </TabsList>
 
-                        <div className="flex items-center text-sm">
+                        <div className="flex items-center text-sm gap-2">
                             <span className="text-muted-foreground">Status:</span>
-                            <div>
+                            <div className="flex space-x-2">
                                 <Badge variant="outline" className="bg-background">
                                     {tasks.filter((task) => task.status === "To Do").length} To Do
                                 </Badge>

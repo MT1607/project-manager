@@ -51,7 +51,7 @@ export const taskSchema = new Schema(
             }
         ],
         createdBy: {type: Schema.Types.ObjectId, ref: "User", required: true},
-        isArchivedL: {type: Boolean, default: false},
+        isArchived: {type: Boolean, default: false},
     },
     {timestamps: true},
 );

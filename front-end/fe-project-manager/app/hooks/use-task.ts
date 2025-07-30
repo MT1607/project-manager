@@ -1,4 +1,4 @@
-import type {CreateTaskFormData} from "~/components/task.create-task-dialog";
+import type {CreateTaskFormData} from "~/components/create-task-dialog";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {postData} from "~/lib/fetch-utils";
 

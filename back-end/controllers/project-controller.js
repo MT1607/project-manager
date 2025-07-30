@@ -109,6 +109,9 @@ const getProjectTasks = async (req, res) => {
             project,
             tasks,
         });
+
+        console.log("project: ", project);
+        console.log("tasks", tasks);
     } catch (error) {
         console.log(error);
         return res.status(500).json({

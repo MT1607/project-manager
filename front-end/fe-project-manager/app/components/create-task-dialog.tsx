@@ -141,7 +141,7 @@ export const CreateTaskDialog = ({
                                                         defaultValue={field.value}
                                                     >
                                                         <FormItem>
-                                                            <FormControl>
+                                                            <FormControl className="w-full">
                                                                 <SelectTrigger>
                                                                     <SelectValue placeholder="Select status"/>
                                                                 </SelectTrigger>
@@ -174,7 +174,7 @@ export const CreateTaskDialog = ({
                                                         defaultValue={field.value}
                                                     >
                                                         <FormItem>
-                                                            <FormControl>
+                                                            <FormControl className="w-full">
                                                                 <SelectTrigger>
                                                                     <SelectValue placeholder="Select priority"/>
                                                                 </SelectTrigger>
@@ -256,9 +256,7 @@ export const CreateTaskDialog = ({
                                                                 className="w-full justify-start text-left font-normal min-h-11"
                                                             >
                                                                 {selectedMembers.length === 0 ? (
-                                                                    <span className="text-muted-foreground">
-                                    Select assignees
-                                  </span>
+                                                                    <span className="text-muted-foreground">Select assignees</span>
                                                                 ) : selectedMembers.length <= 2 ? (
                                                                     selectedMembers
                                                                         .map((m) => {
@@ -307,9 +305,7 @@ export const CreateTaskDialog = ({
                                                                                 }}
                                                                                 id={`member-${member.user._id}`}
                                                                             />
-                                                                            <span className="truncate flex-1">
-                                        {member.user.name}
-                                      </span>
+                                                                            <span className="truncate flex-1">{member.user.name}</span>
                                                                         </div>
                                                                     );
                                                                 })}
