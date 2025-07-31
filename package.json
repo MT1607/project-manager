@@ -1,0 +1,15 @@
+{
+  "name": "project-manager",
+  "private": true,
+  "workspaces": [
+    "front-end/fe-project-manager",
+    "back-end"
+  ],
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  }
+} 
