@@ -2,7 +2,7 @@ import { BackButton } from '~/components/back-button';
 import { CreateTaskDialog } from '~/components/create-task-dialog';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
-import { Card, CardHeader } from '~/components/ui/card';
+import { Card, CardContent, CardHeader } from '~/components/ui/card';
 import { Progress } from '~/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 import { useProjectQuery } from '~/hooks/use-project';
@@ -12,7 +12,9 @@ import type { Project, Task, TaskStatus } from '~/types';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import Loader from '~/components/loader';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Calendar, Check, Clock } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
+import { format } from 'date-fns';
 
 const ProjectDetails = () => {
   const { projectId, workspaceId } = useParams<{
@@ -235,12 +237,84 @@ const TaskCard = ({ task, onClick }: { task: Task; onClick: () => void }) => {
                 }}
               >
                 <AlertCircle className={cn('size-4')} />
-                <span className='sr-only'>Mark to To Do {task.status}</span>
+                <span className='sr-only'>Mark to To Do</span>
+              </Button>
+            )}
+            {task.status !== 'In Progress' && (
+              <Button
+                className='size-6'
+                variant={'ghost'}
+                size={'icon'}
+                onClick={() => {
+                  console.log('mark as in progress');
+                }}
+              >
+                <Clock className={cn('size-4')} />
+                <span className='sr-only'>Mark to In Progress</span>
+              </Button>
+            )}
+            {task.status !== 'Done' && (
+              <Button
+                className='size-6'
+                variant={'ghost'}
+                size={'icon'}
+                onClick={() => {
+                  console.log('mark as to do');
+                }}
+              >
+                <Check className={cn('size-4')} />
+                <span className='sr-only'>Mark to Done</span>
               </Button>
             )}
           </div>
         </div>
       </CardHeader>
+
+      <CardContent>
+        <h4 className='mb-2 ont-medium'>{task.title}</h4>
+        {task.description && (
+          <p className='text-sm text-muted-foreground line-clamp-2 mb-2'>{task.description}</p>
+        )}
+        <div className='flex justify-between items-center text-sm'>
+          <div className='flex items-center gap-2'>
+            {task.assignees && task.assignees.length > 0 && (
+              <div className='space-x-2 flex'>
+                {task.assignees.slice(0, 5).map((member) => (
+                  <Avatar
+                    key={task._id}
+                    className='relative size-8 bg-gray-700 rounded-full border-2 border-background overflow-hidden'
+                    title={member.name}
+                  >
+                    <AvatarImage src={member.profilePicture} />
+                    <AvatarFallback className='size-8 flex justify-center items-center text-white text-center leading-none'>
+                      {member.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+
+                {task.assignees.length > 5 && (
+                  <span className='text-xs text-muted-foreground'>
+                    + {task.assignees.length - 5}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+          {task.dueDate && (
+            <div className='text-xs text-muted-foreground flex items-center justify-center gap-2'>
+              <Calendar className='size-3 text-muted-foreground' />
+              {format(new Date(task.dueDate), 'MMM d, yyyy')}
+            </div>
+          )}
+        </div>
+
+        {task.subtasks && task.subtasks.length > 0 && (
+          <div className='mt-2 text-xs text-muted-foreground'>
+            {task.subtasks.filter((subtask) => subtask.completed).length} / {task.subtasks.length}{' '}
+            subtasks
+          </div>
+        )}
+      </CardContent>
     </Card>
   );
 };
