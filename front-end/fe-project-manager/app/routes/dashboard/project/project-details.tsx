@@ -1,5 +1,5 @@
 import { BackButton } from '~/components/back-button';
-import { CreateTaskDialog } from '~/components/create-task-dialog';
+import { CreateTaskDialog } from '~/components/task/create-task-dialog';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
 import { Card, CardContent, CardHeader } from '~/components/ui/card';
