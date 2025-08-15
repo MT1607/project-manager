@@ -1,27 +1,28 @@
-import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import jwt from 'jsonwebtoken';
+import User from '../models/user.js';
 
 const authMiddleware = async (req, res, next) => {
-    try {
-        const token = req.headers.authorization.split(" ")[1];
+  try {
+    const token = req.headers.authorization.split(' ')[1];
 
-        if (!token) {
-            return res.status(401).json({message: "Unauthorized"});
-        }
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.userId);
-
-        if (!user) {
-            return res.status(401).json({message: "Unauthorized"});
-        }
-        req.user = user;
-        next();
-    } catch (e) {
-        if (e.name === "TokenExpiredError") {
-            return res.status(401).json({message: "Unauthorized"});
-        }
-        return res.status(500).json({message: "Internal Server Error"})
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized' });
     }
-}
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.userId);
+
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    req.user = user;
+    next();
+  } catch (e) {
+    console.log('error middleware: ', e);
+    if (e.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    return res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
 
 export default authMiddleware;

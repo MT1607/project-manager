@@ -8,7 +8,12 @@ import {
   createTask,
   getTaskById,
   updateTaskDescription,
+  updateTaskStatus,
   updateTaskTitle,
+  updateTaskAssignees,
+  updateTaskPriority,
+  addSubtask,
+  updateSubTask,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -30,6 +35,7 @@ router.put(
   authMiddleware,
   validateRequest({
     params: z.object({ taskId: z.string() }),
+    body: z.object({ title: z.string() }),
   }),
   updateTaskTitle
 );
@@ -39,10 +45,60 @@ router.put(
   authMiddleware,
   validateRequest({
     params: z.object({ taskId: z.string() }),
+    body: z.object({ description: z.string() }),
   }),
   updateTaskDescription
 );
 
+router.put(
+  '/:taskId/status',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ status: z.string() }),
+  }),
+  updateTaskStatus
+);
+
+router.put(
+  '/:taskId/assignees',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ assignees: z.array(z.string()) }),
+  }),
+  updateTaskAssignees
+);
+
+router.put(
+  '/:taskId/priority',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ priority: z.string() }),
+  }),
+  updateTaskPriority
+);
+
+router.post(
+  '/:taskId/add-subtask',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ title: z.string().min(1) }),
+  }),
+  addSubtask
+);
+
+router.put(
+  '/:taskId/update-subtask/:subTaskId',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string(), subTaskId: z.string() }),
+    body: z.object({ completed: z.boolean() }),
+  }),
+  updateSubTask
+);
 router.get(
   '/:taskId',
   authMiddleware,
@@ -50,7 +106,6 @@ router.get(
     params: z.object({
       taskId: z.string(),
     }),
-    // body: z.object({ title: z.string() }),
   }),
   getTaskById
 );

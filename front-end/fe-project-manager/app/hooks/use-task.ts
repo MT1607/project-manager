@@ -1,7 +1,8 @@
 import type { CreateTaskFormData } from '~/components/task/create-task-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getData, postData, updateData } from '~/lib/fetch-utils';
+import { getData, postData, testParamsUpdate, updateData } from '~/lib/fetch-utils';
 import { data } from 'react-router';
+import type { TaskStatus, TaskPriority } from '~/types';
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient();
@@ -29,6 +30,97 @@ export const useUpdateTaskTitleMutation = () => {
   return useMutation({
     mutationFn: (data: { taskId: string; title: string }) =>
       updateData(`/tasks/${data.taskId}/title`, { title: data.title }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateTaskStatusMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; status: TaskStatus }) =>
+      updateData(`/tasks/${data.taskId}/status`, { status: data.status }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateTaskDescriptionMutation = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { taskId: string; description: string }) =>
+      updateData(`/tasks/${data.taskId}/description`, { description: data.description }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateTaskAssigneesMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; assignees: string[] }) =>
+      updateData(`/tasks/${data.taskId}/assignees`, { assignees: data.assignees }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateTaskPriorityMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; priority: TaskPriority }) =>
+      updateData(`/tasks/${data.taskId}/priority`, { priority: data.priority }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useAddSubtaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; title: string }) =>
+      postData(`/tasks/${data.taskId}/add-subtask`, { title: data.title }),
+
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ['task', data._id],
+      });
+    },
+  });
+};
+
+export const useUpdateSubtaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; subtaskId: string; completed: boolean }) =>
+      updateData(`/tasks/${data.taskId}/update-subtask/${data.subtaskId}`, {
+        completed: data.completed,
+      }),
 
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
