@@ -2,14 +2,14 @@ import { error } from 'console';
 import Project from '../models/project.js';
 import Task from '../models/task.js';
 import Workspace from '../models/workspace.js';
+import ActivityLog from '../models/activity.js';
+
 import { recordActivity } from '../libs/index.js';
 
 const createTask = async (req, res) => {
   try {
     const { projectId } = req.params;
     const { title, description, status, priority, dueDate, assignees } = req.body;
-
-    console.log(req.body);
 
     const project = await Project.findById(projectId);
 
@@ -382,6 +382,22 @@ const updateSubTask = async (req, res) => {
   }
 };
 
+const getActivitiesByResourceId = async (req, res) => {
+  try {
+    const { resourceId } = req.params;
+    const activity = await ActivityLog.find({ resourceId })
+      .populate('user', 'name profilePicture')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json({ activity });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
 export {
   createTask,
   getTaskById,
@@ -392,4 +408,5 @@ export {
   updateTaskPriority,
   addSubtask,
   updateSubTask,
+  getActivitiesByResourceId,
 };

@@ -14,6 +14,7 @@ import {
   updateTaskPriority,
   addSubtask,
   updateSubTask,
+  getActivitiesByResourceId,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -99,6 +100,7 @@ router.put(
   }),
   updateSubTask
 );
+
 router.get(
   '/:taskId',
   authMiddleware,
@@ -108,6 +110,17 @@ router.get(
     }),
   }),
   getTaskById
+);
+
+router.get(
+  '/:resourceId/activity',
+  authMiddleware,
+  validateRequest({
+    params: z.object({
+      resourceId: z.string(),
+    }),
+  }),
+  getActivitiesByResourceId
 );
 
 export default router;
