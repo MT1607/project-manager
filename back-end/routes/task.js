@@ -15,6 +15,7 @@ import {
   addSubtask,
   updateSubTask,
   getActivitiesByResourceId,
+  addComment,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -121,6 +122,16 @@ router.get(
     }),
   }),
   getActivitiesByResourceId
+);
+
+router.post(
+  '/:taskId/comments',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ text: z.string().min(1) }),
+  }),
+  addComment
 );
 
 export default router;

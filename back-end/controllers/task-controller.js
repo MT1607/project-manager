@@ -3,6 +3,7 @@ import Project from '../models/project.js';
 import Task from '../models/task.js';
 import Workspace from '../models/workspace.js';
 import ActivityLog from '../models/activity.js';
+import Comment from '../models/comment.js';
 
 import { recordActivity } from '../libs/index.js';
 
@@ -65,7 +66,12 @@ const getTaskById = async (req, res) => {
     const { taskId } = req.params;
     const task = await Task.findById(taskId)
       .populate('assignees', 'name profilePicture')
-      .populate('watchers', 'name profilePicture');
+      .populate('watchers', 'name profilePicture')
+      .populate({
+        path: 'comments',
+        populate: { path: 'author', select: 'name profilePicture' },
+      })
+      .sort({ createAt: -1 });
 
     if (!task) {
       return res.status(404).json({
@@ -398,6 +404,53 @@ const getActivitiesByResourceId = async (req, res) => {
   }
 };
 
+const addComment = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { text } = req.body;
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    const project = await Project.findById(task.project).populate('members.user', '_id');
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user._id.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res.status(403).json({ message: 'You are not member of this project' });
+    }
+
+    const comment = await Comment.create({
+      text,
+      task: taskId,
+      author: req.user._id,
+    });
+
+    task.comments.push(comment._id);
+    await task.save();
+
+    const populatedComment = await Comment.findById(comment._id).populate(
+      'author',
+      'name profilePicture'
+    );
+
+    await recordActivity(req.user._id, 'added_comment', 'Task', taskId, {
+      description: `Added a new comment`,
+    });
+
+    return res.status(201).json(populatedComment);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export {
   createTask,
   getTaskById,
@@ -409,4 +462,5 @@ export {
   addSubtask,
   updateSubTask,
   getActivitiesByResourceId,
+  addComment,
 };

@@ -17,17 +17,17 @@ const SubtaskDetail = ({ subTasks, taskId }: { subTasks: Subtask[]; taskId: stri
     console.log('subTaskId: ', subTaskId);
     console.log('completed: ', checked);
     updateSubtask(
-      { taskId, subtaskId: subTaskId, completed: checked }
-      // {
-      //   onSuccess: () => {
-      //     toast.success(`Subtask marked as ${checked ? 'completed' : 'incomplete'}`);
-      //   },
-      //   onError: (error: any) => {
-      //     console.log('error updated subtask: ', error);
-      //     const errorMessage = error.response?.data?.message || 'Failed to update subtask';
-      //     toast.error(errorMessage);
-      //   },
-      // }
+      { taskId, subtaskId: subTaskId, completed: checked },
+      {
+        onSuccess: () => {
+          toast.success(`Subtask marked as ${checked ? 'completed' : 'incomplete'}`);
+        },
+        onError: (error: any) => {
+          console.log('error updated subtask: ', error);
+          const errorMessage = error.response?.data?.message || 'Failed to update subtask';
+          toast.error(errorMessage);
+        },
+      }
     );
   };
 
@@ -59,7 +59,7 @@ const SubtaskDetail = ({ subTasks, taskId }: { subTasks: Subtask[]; taskId: stri
               <Checkbox
                 id={subTask._id}
                 checked={subTask.completed}
-                onCheckedChange={(checked) => {
+                onCheckedChange={(checked: boolean) => {
                   handleToggleTask(subTask._id, !!checked);
                 }}
                 disabled={isUpdatedSubtask}

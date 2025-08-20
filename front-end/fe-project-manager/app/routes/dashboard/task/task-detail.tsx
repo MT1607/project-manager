@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router';
 import { BackButton } from '~/components/back-button';
 import Loader from '~/components/loader';
+import CommentSection from '~/components/task/comment-section';
 import SubtaskDetail from '~/components/task/sub-task';
 import TaskActivity from '~/components/task/task-activity';
 import TaskAssigneesSelector from '~/components/task/task-assignees-selector';
@@ -141,6 +142,8 @@ const TaskDetail = () => {
 
             {/* {right-sides} */}
           </div>
+
+          <CommentSection taskId={task._id} members={project.members} />
         </div>
 
         <div className='w-full'>

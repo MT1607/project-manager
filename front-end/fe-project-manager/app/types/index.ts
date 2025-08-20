@@ -106,35 +106,24 @@ export interface MemberProps {
   joinedAt: Date;
 }
 
-// export interface Comment {
-//     text: string;
-//     task: Task;
-//     author: User;
-//     mentions: [
-//         {
-//             user: User;
-//             offset: number;
-//             length: number;
-//         }
-//     ];
-//     reactions: [
-//         {
-//             emoji: string;
-//             user: User;
-//         }
-//     ];
-//     attachments: [
-//         {
-//             fileName: string;
-//             fileUrl: string;
-//             fileType: string;
-//             fileSize: number;
-//         }
-//     ];
-//     isEdited: boolean;
-//     createdAt: Date;
-//     updatedAt: Date;
-// }
+export interface CommentReaction {
+  emoji: string;
+  user: User;
+}
+
+export interface Comment {
+  _id: string;
+  author: User;
+  text: string;
+  createdAt: Date;
+  reactions?: CommentReaction[];
+  attachments?: {
+    fileName: string;
+    fileUrl: string;
+    fileType?: string;
+    fileSize?: number;
+  }[];
+}
 
 export enum ProjectMemberRole {
   MANAGER = 'manager',

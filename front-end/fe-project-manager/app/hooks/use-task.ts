@@ -150,3 +150,18 @@ export const useUpdateSubtaskMutation = () => {
     },
   });
 };
+
+export const useAddCommentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; text: string }) =>
+      postData(`/tasks/${data.taskId}/comments`, { text: data.text }),
+
+    onSuccess: (_data: any, variables) => {
+      // invalidate task (to refresh comments) and activity
+      queryClient.invalidateQueries({ queryKey: ['task', variables.taskId] });
+      queryClient.invalidateQueries({ queryKey: ['task-activity', variables.taskId] });
+    },
+  });
+};
