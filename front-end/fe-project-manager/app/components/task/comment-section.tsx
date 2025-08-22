@@ -5,6 +5,8 @@ import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 import { useAddCommentMutation, useTaskByIdQuery } from '~/hooks/use-task';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { formatDistanceToNow } from 'date-fns';
 
 const CommentSection = ({
   taskId,
@@ -32,15 +34,25 @@ const CommentSection = ({
     );
   };
   return (
-    <div className='bg-card rounded-lg p-6 shadow-sm'>
+    <div className='bg-card rounded-lg p-6 shadow-sm mt-4'>
       <h3 className='text-lg font-medium mb-4'>Comments</h3>
       <ScrollArea className='h-[300px] mb-4'>
         <div className='space-y-4 pr-2'>
           {(data?.task.comments || []).map((comment) => (
-            <div key={comment._id} className='p-3 rounded-md border'>
-              <div className='text-sm font-medium'>{comment.author?.name || 'User'}</div>
-              <div className='text-sm text-muted-foreground whitespace-pre-wrap'>
-                {comment.text}
+            <div key={comment._id} className='p-3 rounded-md border flex gap-4'>
+              <Avatar className={'size-8'}>
+                <AvatarImage src={comment.author.profilePicture} />
+                <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
+              </Avatar>
+              <div className='flex-1'>
+                <div className='flex justify-between items-center mb-1'>
+                  <span className='text-sm font-medium'>{comment.author?.name || 'User'}</span>
+                  <span className='text-sm text-muted-foreground'>
+                    {formatDistanceToNow(comment.createdAt, { addSuffix: true })}
+                  </span>
+                </div>
+
+                <p className='text-sm text-muted-foreground whitespace-pre-wrap'>{comment.text}</p>
               </div>
             </div>
           ))}

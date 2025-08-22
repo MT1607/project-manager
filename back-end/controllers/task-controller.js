@@ -451,6 +451,87 @@ const addComment = async (req, res) => {
   }
 };
 
+const addWatcherTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    const project = await Project.findById(task.project).populate('members.user', '_id');
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user._id.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res.status(403).json({ message: 'You are not member of this project' });
+    }
+
+    // Check if user is already a watcher
+    const isAlreadyWatcher = task.watchers.includes(req.user._id);
+
+    if (isAlreadyWatcher) {
+      return res.status(400).json({ message: 'You are already watching this task' });
+    }
+
+    // Add user as watcher
+    task.watchers.push(req.user._id);
+    await task.save();
+
+    await recordActivity(req.user._id, 'updated_task', 'Task', taskId, {
+      description: `Watched task ${isAlreadyWatcher ? 'unwatched' : 'watched'} task ${task.title}`,
+    });
+
+    return res.status(200).json({ message: 'Successfully added as watcher' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
+
+const achievedTask = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    const project = await Project.findById(task.project).populate('members.user', '_id');
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user._id.toString() === req.user._id.toString()
+    );
+    if (!isMember) {
+      return res.status(403).json({ message: 'You are not member of this project' });
+    }
+
+    const oldArchived = task.isArchived;
+    task.isArchived = !oldArchived;
+    await task.save();
+
+    await recordActivity(req.user._id, 'updated_task', 'Task', taskId, {
+      description: `${oldArchived ? 'unarchived' : 'archived'} task ${task.title}`,
+    });
+
+    return res.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 export {
   createTask,
   getTaskById,
@@ -463,4 +544,6 @@ export {
   updateSubTask,
   getActivitiesByResourceId,
   addComment,
+  addWatcherTask,
+  achievedTask,
 };

@@ -165,3 +165,31 @@ export const useAddCommentMutation = () => {
     },
   });
 };
+
+export const useAddWatcherMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (taskId: string) => postData(`/tasks/${taskId}/watcher`, {}),
+
+    onSuccess: (_data: any, taskId: string) => {
+      // invalidate task to refresh watchers
+      queryClient.invalidateQueries({ queryKey: ['task', taskId] });
+      queryClient.invalidateQueries({ queryKey: ['task-activity', taskId] });
+    },
+  });
+};
+
+export const useArchiveTaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (taskId: string) => postData(`/tasks/${taskId}/achieved`, {}),
+
+    onSuccess: (_data: any, taskId: string) => {
+      // invalidate task and activity
+      queryClient.invalidateQueries({ queryKey: ['task', taskId] });
+      queryClient.invalidateQueries({ queryKey: ['task-activity', taskId] });
+    },
+  });
+};

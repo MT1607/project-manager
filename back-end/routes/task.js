@@ -16,6 +16,8 @@ import {
   updateSubTask,
   getActivitiesByResourceId,
   addComment,
+  addWatcherTask,
+  achievedTask,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -132,6 +134,24 @@ router.post(
     body: z.object({ text: z.string().min(1) }),
   }),
   addComment
+);
+
+router.post(
+  '/:taskId/watcher',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+  }),
+  addWatcherTask
+);
+
+router.post(
+  '/:taskId/achieved',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+  }),
+  achievedTask
 );
 
 export default router;

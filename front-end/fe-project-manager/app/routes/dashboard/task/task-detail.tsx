@@ -14,7 +14,7 @@ import TaskTitle from '~/components/task/task-title';
 import Watchers from '~/components/task/watcher';
 import { Badge } from '~/components/ui/badge';
 import { Button } from '~/components/ui/button';
-import { useTaskByIdQuery } from '~/hooks/use-task';
+import { useTaskByIdQuery, useAddWatcherMutation, useArchiveTaskMutation } from '~/hooks/use-task';
 import { useAuth } from '~/provider/auth-context';
 import type { Project, Task } from '~/types';
 
@@ -35,6 +35,9 @@ const TaskDetail = () => {
     };
     isLoading: boolean;
   };
+
+  const { mutate: addWatcher, isPending: isAddingWatcher } = useAddWatcherMutation();
+  const { mutate: archiveTask, isPending: isArchiving } = useArchiveTaskMutation();
 
   if (isLoading) {
     return (
@@ -62,6 +65,17 @@ const TaskDetail = () => {
 
   const member = task?.assignees || [];
 
+  const handleWatchToggle = () => {
+    if (!isUserWatching) {
+      addWatcher(taskId!);
+    }
+    // TODO: Implement unwatch functionality
+  };
+
+  const handleArchiveToggle = () => {
+    archiveTask(taskId!);
+  };
+
   return (
     <div className='container mx-auto p-0 py-4 md:px-8'>
       <div className='flex flex-col md:flex-row items-center justify-between mb-6'>
@@ -76,7 +90,13 @@ const TaskDetail = () => {
           )}
         </div>
         <div className='flex space-x-2 mt-4 md:mt-0'>
-          <Button variant={'outline'} size={'sm'} onClick={() => {}} className='w-fit'>
+          <Button
+            variant={'outline'}
+            size={'sm'}
+            onClick={handleWatchToggle}
+            disabled={isAddingWatcher}
+            className='w-fit'
+          >
             {isUserWatching ? (
               <>
                 <EyeOff className='mr-2 size-4' />
@@ -84,13 +104,20 @@ const TaskDetail = () => {
               </>
             ) : (
               <>
-                <Eye className='mr-2 size-4'>Watch</Eye>
+                <Eye className='mr-2 size-4' />
+                Watch
               </>
             )}
           </Button>
 
-          <Button variant={'outline'} size={'sm'} onClick={() => {}} className='w-fit'>
-            {task.isArchived ? 'Unarchived' : 'Archive'}
+          <Button
+            variant={'outline'}
+            size={'sm'}
+            onClick={handleArchiveToggle}
+            disabled={isArchiving}
+            className='w-fit'
+          >
+            {task.isArchived ? 'Unarchive' : 'Archive'}
           </Button>
         </div>
       </div>
