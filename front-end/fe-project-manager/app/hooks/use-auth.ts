@@ -1,6 +1,6 @@
 import {useMutation} from "@tanstack/react-query";
-import type {SignUpFormData} from "~/routes/auth/sign-up";
-import {postData} from "~/lib/fetch-utils";
+import type {SignUpFormData} from "@/routes/auth/sign-up";
+import {postData} from "@/lib/fetch-utils";
 
 export const useSignUpMutation = () => {
     return useMutation({

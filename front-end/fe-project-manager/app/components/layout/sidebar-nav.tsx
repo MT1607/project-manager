@@ -1,7 +1,7 @@
-import type {Workspace} from "~/types";
+import type {Workspace} from "@/types";
 import type {LucideIcon} from "lucide-react";
-import {cn} from "~/lib/utils";
-import {Button} from "~/components/ui/button";
+import {cn} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
 import {useLocation, useNavigate} from "react-router";
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {

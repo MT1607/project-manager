@@ -1,6 +1,6 @@
 import React from "react";
 import {z} from "zod";
-import {workspaceSchema} from "~/lib/schema";
+import {workspaceSchema} from "@/lib/schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {
@@ -8,7 +8,7 @@ import {
     DialogContent, DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "~/components/ui/dialog";
+} from "@/components/ui/dialog";
 import {
     Form,
     FormControl,
@@ -16,12 +16,12 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
-import {Textarea} from "~/components/ui/textarea";
-import {cn} from "~/lib/utils";
-import {Button} from "~/components/ui/button";
-import {useCreateWorkspace} from "~/hooks/use-workspace";
+} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {cn} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import {useCreateWorkspace} from "@/hooks/use-workspace";
 import {toast} from "sonner";
 import {useNavigate} from "react-router";
 

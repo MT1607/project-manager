@@ -1,13 +1,13 @@
-import type {Project} from "~/types";
+import type {Project} from "@/types";
 import {Link} from "react-router";
 import {
     Card, CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "~/components/ui/card";
-import {cn} from "~/lib/utils";
-import {getTaskStatusColor} from "~/lib";
+} from "@/components/ui/card";
+import {cn} from "@/lib/utils";
+import {getTaskStatusColor} from "@/lib";
 import {Progress} from "../ui/progress";
 import {CalendarDays, CalendarIcon} from "lucide-react";
 import {format} from "date-fns";

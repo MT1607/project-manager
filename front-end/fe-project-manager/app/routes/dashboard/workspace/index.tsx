@@ -1,14 +1,14 @@
 import {useState} from "react";
-import {useGetWorkspace} from "~/hooks/use-workspace";
-import type {Workspace} from "~/types";
-import Loader from "~/components/loader";
-import CreateWorkspace from "~/components/workspace/create-workspace";
-import {Button} from "~/components/ui/button";
+import {useGetWorkspace} from "@/hooks/use-workspace";
+import type {Workspace} from "@/types";
+import Loader from "@/components/loader";
+import CreateWorkspace from "@/components/workspace/create-workspace";
+import {Button} from "@/components/ui/button";
 import {PlusCircle, User, Users} from "lucide-react";
-import NoDataFound from "~/components/no-data-found";
+import NoDataFound from "@/components/no-data-found";
 import {Link} from "react-router";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "~/components/ui/card";
-import WorkspaceAvatar from "~/components/workspace/workspace-avatar";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import WorkspaceAvatar from "@/components/workspace/workspace-avatar";
 import {format} from "date-fns";
 
 const Workspace = () => {

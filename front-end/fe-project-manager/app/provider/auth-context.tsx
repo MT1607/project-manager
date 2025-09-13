@@ -1,8 +1,8 @@
-import type {User} from "~/types";
+import type {User} from "@/types";
 import React, {createContext, useEffect} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {useLocation, useNavigate} from "react-router";
-import {publicRoutes} from "~/lib";
+import {publicRoutes} from "@/lib";
 
 interface AuthContextType {
     user: User | null;

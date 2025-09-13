@@ -1,13 +1,13 @@
 import {z} from "zod";
-import {signUpSchema} from "~/lib/schema";
+import {signUpSchema} from "@/lib/schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
-import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {Link, useNavigate} from "react-router";
-import {useSignUpMutation} from "~/hooks/use-auth";
+import {useSignUpMutation} from "@/hooks/use-auth";
 import {toast} from "sonner";
 
 export type SignUpFormData = z.infer<typeof signUpSchema>;

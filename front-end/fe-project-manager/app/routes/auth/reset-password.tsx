@@ -1,15 +1,15 @@
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {resetPasswordSchema} from "~/lib/schema";
-import {Card, CardContent, CardHeader} from "~/components/ui/card";
+import {resetPasswordSchema} from "@/lib/schema";
+import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {Link, useSearchParams} from "react-router";
 import {ArrowLeft, CheckCircle, Loader2} from "lucide-react";
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
-import {Button} from "~/components/ui/button";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
 import {z} from "zod";
 import {useState} from "react";
-import {useResetPassword} from "~/hooks/use-auth";
+import {useResetPassword} from "@/hooks/use-auth";
 import {toast} from "sonner";
 
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;

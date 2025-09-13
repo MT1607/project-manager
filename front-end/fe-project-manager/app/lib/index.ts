@@ -1,4 +1,4 @@
-import type {ProjectStatus, TaskStatus} from "~/types";
+import type {ProjectStatus, TaskStatus} from "@/types";
 
 export const publicRoutes = ["/sign-in", "/sign-up", "/verify-email", "/forgot-password", "/reset-password", "*"];
 

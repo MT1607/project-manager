@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import type { User, Comment as CommentType } from '~/types';
+import type { User, Comment as CommentType } from '@/types';
 import { ScrollArea } from '../ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
-import { useAddCommentMutation, useTaskByIdQuery } from '~/hooks/use-task';
+import { useAddCommentMutation, useTaskByIdQuery } from '@/hooks/use-task';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { formatDistanceToNow } from 'date-fns';
 

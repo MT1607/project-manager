@@ -5,9 +5,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '~/components/ui/dialog';
-import { createTaskSchema } from '~/lib/schema';
-import type { ProjectMemberRole, User } from '~/types';
+} from '@/components/ui/dialog';
+import { createTaskSchema } from '@/lib/schema';
+import type { ProjectMemberRole, User } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import type { z } from 'zod';
@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import { Calendar } from '../ui/calendar';
 import { Checkbox } from '../ui/checkbox';
 import { toast } from 'sonner';
-import { useCreateTask } from '~/hooks/use-task';
+import { useCreateTask } from '@/hooks/use-task';
 
 interface CreateTaskDialogProps {
   open: boolean;

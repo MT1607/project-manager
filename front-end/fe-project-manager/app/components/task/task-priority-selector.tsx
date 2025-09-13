@@ -1,6 +1,6 @@
-import type { TaskPriority } from '~/types';
+import type { TaskPriority } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useUpdateTaskPriorityMutation } from '~/hooks/use-task';
+import { useUpdateTaskPriorityMutation } from '@/hooks/use-task';
 import { toast } from 'sonner';
 
 const TaskPrioritySelector = ({ priority, taskId }: { priority: TaskPriority; taskId: string }) => {

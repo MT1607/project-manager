@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Edit } from 'lucide-react';
-import { useUpdateTaskTitleMutation } from '~/hooks/use-task';
+import { useUpdateTaskTitleMutation } from '@/hooks/use-task';
 import { toast } from 'sonner';
 
 interface TaskTitleProps {

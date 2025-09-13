@@ -1,6 +1,6 @@
-import type { TaskStatus } from '~/types';
+import type { TaskStatus } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { useUpdateTaskStatusMutation, useUpdateTaskTitleMutation } from '~/hooks/use-task';
+import { useUpdateTaskStatusMutation, useUpdateTaskTitleMutation } from '@/hooks/use-task';
 import { toast } from 'sonner';
 
 const TaskStatusSelector = ({ status, taskId }: { status: TaskStatus; taskId: string }) => {

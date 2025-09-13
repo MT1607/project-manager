@@ -1,8 +1,8 @@
-import type { CreateTaskFormData } from '~/components/task/create-task-dialog';
+import type { CreateTaskFormData } from '@/components/task/create-task-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getData, postData, testParamsUpdate, updateData } from '~/lib/fetch-utils';
+import { getData, postData, testParamsUpdate, updateData } from '@/lib/fetch-utils';
 import { data } from 'react-router';
-import type { TaskStatus, TaskPriority } from '~/types';
+import type { TaskStatus, TaskPriority } from '@/types';
 
 export const useCreateTask = () => {
   const queryClient = useQueryClient();

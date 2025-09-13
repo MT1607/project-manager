@@ -1,6 +1,6 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import type {CreateProjectFormData} from "~/components/project/create-project";
-import {getData, postData} from "~/lib/fetch-utils";
+import type {CreateProjectFormData} from "@/components/project/create-project";
+import {getData, postData} from "@/lib/fetch-utils";
 
 export const useCreateProject = () => {
     const queryClient = useQueryClient();

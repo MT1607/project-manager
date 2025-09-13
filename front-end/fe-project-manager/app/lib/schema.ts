@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {ProjectStatus} from "~/types";
+import {ProjectStatus} from "@/types";
 
 export const signInSchema = z.object({
     email: z.string().email("Email is required."),

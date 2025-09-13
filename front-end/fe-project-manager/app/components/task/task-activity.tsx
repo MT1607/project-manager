@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { getData } from '~/lib/fetch-utils';
+import { getData } from '@/lib/fetch-utils';
 import Loader from '../loader';
-import type { ActivityLog } from '~/types';
+import type { ActivityLog } from '@/types';
 import { getActivityIcon } from './task-icon';
 import { ScrollArea } from '../ui/scroll-area';
 

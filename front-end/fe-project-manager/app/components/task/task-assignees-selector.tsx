@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import type { Task, User } from '~/types';
+import type { Task, User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Checkbox } from '../ui/checkbox';
 import { Button } from '../ui/button';
-import { useUpdateTaskAssigneesMutation } from '~/hooks/use-task';
+import { useUpdateTaskAssigneesMutation } from '@/hooks/use-task';
 import { toast } from 'sonner';
 
 const TaskAssigneesSelector = ({

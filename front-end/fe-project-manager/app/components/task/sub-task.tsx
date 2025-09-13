@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import type { Subtask } from '~/types';
+import type { Subtask } from '@/types';
 import { Checkbox } from '../ui/checkbox';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Plus } from 'lucide-react';
-import { cn } from '~/lib/utils';
-import { useAddSubtaskMutation, useUpdateSubtaskMutation } from '~/hooks/use-task';
+import { cn } from '@/lib/utils';
+import { useAddSubtaskMutation, useUpdateSubtaskMutation } from '@/hooks/use-task';
 import { toast } from 'sonner';
 
 const SubtaskDetail = ({ subTasks, taskId }: { subTasks: Subtask[]; taskId: string }) => {

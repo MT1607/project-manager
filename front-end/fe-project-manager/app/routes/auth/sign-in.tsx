@@ -1,16 +1,16 @@
 import {z} from "zod";
-import {signInSchema} from "~/lib/schema";
+import {signInSchema} from "@/lib/schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "~/components/ui/card";
-import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
-import {Button} from "~/components/ui/button";
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {FormControl, FormField, FormItem, FormLabel, Form, FormMessage} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
 import {Link, useNavigate} from "react-router";
-import {useLoginUser} from "~/hooks/use-auth";
+import {useLoginUser} from "@/hooks/use-auth";
 import {toast} from "sonner";
 import {Loader2} from "lucide-react";
-import {useAuth} from "~/provider/auth-context";
+import {useAuth} from "@/provider/auth-context";
 
 type SignInFormData = z.infer<typeof signInSchema>;
 

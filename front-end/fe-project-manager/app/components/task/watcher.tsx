@@ -1,4 +1,4 @@
-import type { User } from '~/types';
+import type { User } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 const Watchers = ({ watchers }: { watchers: User[] }) => {

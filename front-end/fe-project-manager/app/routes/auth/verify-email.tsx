@@ -1,9 +1,9 @@
 import {Link, useSearchParams} from "react-router";
 import {useEffect, useState} from "react";
-import {Card, CardContent, CardHeader} from "~/components/ui/card";
+import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import {ArrowLeft, CheckCircle, Loader, XCircle} from "lucide-react";
-import {Button} from "~/components/ui/button";
-import {useVerifyEmail} from "~/hooks/use-auth";
+import {Button} from "@/components/ui/button";
+import {useVerifyEmail} from "@/hooks/use-auth";
 import {toast} from "sonner";
 
 const VerifyEmail = () => {

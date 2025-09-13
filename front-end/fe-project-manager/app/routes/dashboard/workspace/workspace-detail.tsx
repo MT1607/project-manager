@@ -1,11 +1,11 @@
 import {useParams} from "react-router";
 import {useState} from "react";
-import {useGetWorkspaceId} from "~/hooks/use-workspace";
-import type {Project, Workspace} from "~/types";
-import Loader from "~/components/loader";
-import WorkspaceHeader from "~/components/workspace/workspace-header";
-import ProjectList from "~/components/workspace/project-list";
-import CreateProjectDialog from "~/components/project/create-project";
+import {useGetWorkspaceId} from "@/hooks/use-workspace";
+import type {Project, Workspace} from "@/types";
+import Loader from "@/components/loader";
+import WorkspaceHeader from "@/components/workspace/workspace-header";
+import ProjectList from "@/components/workspace/project-list";
+import CreateProjectDialog from "@/components/project/create-project";
 
 const WorkspaceDetail = () => {
     const {workspaceId} = useParams<{ workspaceId: string }>();

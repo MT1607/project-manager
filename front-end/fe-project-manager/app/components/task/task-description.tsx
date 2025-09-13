@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { useUpdateTaskDescriptionMutation } from '~/hooks/use-task';
+import { useUpdateTaskDescriptionMutation } from '@/hooks/use-task';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Edit } from 'lucide-react';

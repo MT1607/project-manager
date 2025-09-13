@@ -14,7 +14,7 @@ import {
   UserMinus,
   UserPlus,
 } from 'lucide-react';
-import type { ActionType } from '~/types';
+import type { ActionType } from '@/types';
 
 export const getActivityIcon = (action: ActionType) => {
   switch (action) {

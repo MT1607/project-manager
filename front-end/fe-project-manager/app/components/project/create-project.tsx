@@ -1,6 +1,6 @@
-import {type MemberProps, ProjectStatus} from "~/types";
+import {type MemberProps, ProjectStatus} from "@/types";
 import {date, z} from "zod";
-import {projectSchema} from "~/lib/schema";
+import {projectSchema} from "@/lib/schema";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {
@@ -10,7 +10,7 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "~/components/ui/dialog";
+} from "@/components/ui/dialog";
 import {
     Form,
     FormControl,
@@ -18,28 +18,28 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "~/components/ui/form";
-import {Input} from "~/components/ui/input";
-import {Textarea} from "~/components/ui/textarea";
+} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "~/components/ui/select";
+} from "@/components/ui/select";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "~/components/ui/popover";
-import {Button} from "~/components/ui/button";
-import {Calendar} from "~/components/ui/calendar";
+} from "@/components/ui/popover";
+import {Button} from "@/components/ui/button";
+import {Calendar} from "@/components/ui/calendar";
 import {format} from "date-fns";
 import {CalendarIcon} from "lucide-react";
-import {Checkbox} from "~/components/ui/checkbox";
+import {Checkbox} from "@/components/ui/checkbox";
 import {toast} from "sonner";
-import {useCreateProject} from "~/hooks/use-project";
+import {useCreateProject} from "@/hooks/use-project";
 
 interface CreateProjectDialogProps {
     isOpen: boolean;

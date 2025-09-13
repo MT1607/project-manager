@@ -1,5 +1,5 @@
-import type {Workspace} from "~/types";
-import {useAuth} from "~/provider/auth-context";
+import type {Workspace} from "@/types";
+import {useAuth} from "@/provider/auth-context";
 import {useState} from "react";
 import {
     CheckCircle2,
@@ -14,10 +14,10 @@ import {
     Users,
     Wrench,
 } from "lucide-react";
-import {cn} from "~/lib/utils";
+import {cn} from "@/lib/utils";
 import {Link} from "react-router";
 import {Button} from "../ui/button";
-import {ScrollArea} from "~/components/ui/scroll-area";
+import {ScrollArea} from "@/components/ui/scroll-area";
 import SidebarNav from "./sidebar-nav";
 
 const SidebarComponent = ({

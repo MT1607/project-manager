@@ -1,6 +1,6 @@
-import type {Project} from "~/types";
-import NoDataFound from "~/components/no-data-found";
-import ProjectCard from "~/components/project/project-card";
+import type {Project} from "@/types";
+import NoDataFound from "@/components/no-data-found";
+import ProjectCard from "@/components/project/project-card";
 
 interface ProjectListProps {
     workspaceId: string;
