@@ -20,6 +20,20 @@ const Dashboard = () => {
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get('workspaceId');
 
+  // Always call hooks before any conditional returns
+  const { data, isPending } = useGetWorkspaceStatsQuery(workspaceId || '') as {
+    data: {
+      stats: StatsCardProps;
+      taskTrendsData: TaskTrendsData[];
+      projectStatusData: ProjectStatusData[];
+      taskPriorityData: TaskPriorityData[];
+      workspaceProductivityData: WorkspaceProductivityData[];
+      upcomingTasks: Task[];
+      recentProjects: Project[];
+    };
+    isPending: boolean;
+  };
+
   // Show "No Workspace" message when no workspace is selected
   if (!workspaceId) {
     return (
@@ -40,23 +54,30 @@ const Dashboard = () => {
     );
   }
 
-  const { data, isPending } = useGetWorkspaceStatsQuery(workspaceId || '') as {
-    data: {
-      stats: StatsCardProps;
-      taskTrendsData: TaskTrendsData[];
-      projectStatusData: ProjectStatusData[];
-      taskPriorityData: TaskPriorityData[];
-      workspaceProductivityData: WorkspaceProductivityData[];
-      upcomingTasks: Task[];
-      recentProjects: Project[];
-    };
-    isPending: boolean;
-  };
-
   if (isPending) {
     return (
       <div>
         <Loader />
+      </div>
+    );
+  }
+
+  // Show "No Workspace" message when no workspace is selected
+  if (!data) {
+    return (
+      <div className='space-y-8 2xl:space-y-12'>
+        <div className='flex items-center justify-between'>
+          <h1 className='text-2xl font-bold'>Dashboard</h1>
+        </div>
+
+        <div className='flex items-center justify-center h-64'>
+          <div className='text-center'>
+            <h2 className='text-xl font-semibold text-gray-600 mb-2'>No Workspace Selected</h2>
+            <p className='text-gray-500'>
+              Please select a workspace from the dropdown above to view your dashboard.
+            </p>
+          </div>
+        </div>
       </div>
     );
   }

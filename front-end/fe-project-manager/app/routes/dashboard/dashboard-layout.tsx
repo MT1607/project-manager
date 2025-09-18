@@ -34,7 +34,7 @@ const DashboardLayout = () => {
     if (workspace && workspace.length > 0 && !currentWorkspace) {
       const lastWorkspace = workspace[workspace.length - 1];
       setCurrentWorkspace(lastWorkspace);
-      
+
       // If we're on the dashboard page without a workspaceId parameter, navigate with the workspaceId
       if (location.pathname === '/dashboard' && !location.search.includes('workspaceId')) {
         navigate(`/dashboard?workspaceId=${lastWorkspace._id}`, { replace: true });

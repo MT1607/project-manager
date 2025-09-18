@@ -28,7 +28,7 @@ const SidebarNav = ({
     <nav className={cn('flex flex-col gap-y-2', className)} {...props}>
       {items.map((el) => {
         const Icon = el.icon;
-        const isActive = location.pathname === el.href;
+        const isActive = location.pathname.includes(el.href);
         const handleClick = () => {
           if (el.href === '/workspaces') {
             navigate(el.href);
