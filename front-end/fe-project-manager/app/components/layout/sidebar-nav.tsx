@@ -1,55 +1,60 @@
-import type {Workspace} from "@/types";
-import type {LucideIcon} from "lucide-react";
-import {cn} from "@/lib/utils";
-import {Button} from "@/components/ui/button";
-import {useLocation, useNavigate} from "react-router";
+import type { Workspace } from '@/types';
+import type { LucideIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useLocation, useNavigate } from 'react-router';
 
 interface SidebarNavProps extends React.HTMLAttributes<HTMLElement> {
-    items: {
-        title: string;
-        href: string;
-        icon: LucideIcon;
-    }[];
-    isCollapse: boolean;
-    currentWorkspace: Workspace | null;
-    className?: string;
+  items: {
+    title: string;
+    href: string;
+    icon: LucideIcon;
+  }[];
+  isCollapse: boolean;
+  currentWorkspace: Workspace | null;
+  className?: string;
 }
 
 const SidebarNav = ({
-                        items,
-                        isCollapse,
-                        className,
-                        currentWorkspace,
-                        ...props
-                    }: SidebarNavProps) => {
-    const location = useLocation();
-    const navigate = useNavigate();
-    return (
-        <nav className={cn("flex flex-col gap-y-2", className)} {...props}>
-            {items.map((el) => {
-                const Icon = el.icon;
-                const isActive = location.pathname === el.href;
-                const handleClick = () => {
-                    if (el.href === "/workspaces") {
-                        navigate(el.href)
-                    } else if (currentWorkspace && currentWorkspace._id) {
-                        navigate(`${el.href}?workspaceId=${currentWorkspace._id}`)
-                    } else {
-                        navigate(el.href)
-                    }
-                }
+  items,
+  isCollapse,
+  className,
+  currentWorkspace,
+  ...props
+}: SidebarNavProps) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <nav className={cn('flex flex-col gap-y-2', className)} {...props}>
+      {items.map((el) => {
+        const Icon = el.icon;
+        const isActive = location.pathname === el.href;
+        const handleClick = () => {
+          if (el.href === '/workspaces') {
+            navigate(el.href);
+          } else if (currentWorkspace && currentWorkspace._id) {
+            navigate(`${el.href}?workspaceId=${currentWorkspace._id}`);
+          } else {
+            // If no workspace is selected, navigate to dashboard without workspaceId
+            // This will show the "No Workspace Selected" message
+            navigate(el.href);
+          }
+        };
 
-                return <Button key={el.href} variant={isActive ? "outline" : "ghost"}
-                               className={cn("justify-start", isActive && "bg-blue-800/20 text-blue-600 font-medium")}
-                               onClick={handleClick}>
-                    <Icon className={"mr-2 size-4"}/>
-                    {
-                        isCollapse ? <span className={"sr-only"}>{el.title}</span> : (el.title)
-                    }
-                </Button>
-            })}
-        </nav>
-    );
+        return (
+          <Button
+            key={el.href}
+            variant={isActive ? 'outline' : 'ghost'}
+            className={cn('justify-start', isActive && 'bg-blue-800/20 text-blue-600 font-medium')}
+            onClick={handleClick}
+          >
+            <Icon className={'mr-2 size-4'} />
+            {isCollapse ? <span className={'sr-only'}>{el.title}</span> : el.title}
+          </Button>
+        );
+      })}
+    </nav>
+  );
 };
 
 export default SidebarNav;

@@ -26,14 +26,8 @@ const useGetWorkspaceStatsQuery = (workspaceId: string) => {
   return useQuery({
     queryKey: ['workspace', 'stats', workspaceId],
     queryFn: async () => {
-      if (!workspaceId) {
-        throw new Error('Workspace ID is required');
-      }
       return getData(`/workspaces/${workspaceId}/stats`);
     },
-    enabled: !!workspaceId,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };
 

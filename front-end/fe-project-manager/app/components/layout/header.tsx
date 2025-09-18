@@ -66,12 +66,18 @@ const Header = ({ onWorkspaceSelected, selectedWorkspace, onCreateWorkspace }: H
             <DropdownMenuLabel>Workspace</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              {workspace.map((ws) => (
-                <DropdownMenuItem key={ws._id} onClick={() => handleOnClick(ws)}>
-                  {ws.color && <WorkspaceAvatar color={ws.color} name={ws.name} />}
-                  <span className='ml-2'>{ws.name}</span>
+              {workspace && workspace.length > 0 ? (
+                workspace.map((ws) => (
+                  <DropdownMenuItem key={ws._id} onClick={() => handleOnClick(ws)}>
+                    {ws.color && <WorkspaceAvatar color={ws.color} name={ws.name} />}
+                    <span className='ml-2'>{ws.name}</span>
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <DropdownMenuItem disabled>
+                  <span className='text-gray-500'>No workspaces available</span>
                 </DropdownMenuItem>
-              ))}
+              )}
             </DropdownMenuGroup>
 
             <DropdownMenuGroup>
