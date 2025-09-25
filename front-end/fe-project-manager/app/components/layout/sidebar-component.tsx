@@ -37,7 +37,7 @@ const SidebarComponent = ({ currentWorkspace }: { currentWorkspace: Workspace | 
     },
     {
       title: 'My task',
-      href: '/my-task',
+      href: '/my-tasks',
       icon: ListCheck,
     },
     {

@@ -79,24 +79,19 @@ export interface Task {
   _id: string;
   title: string;
   description?: string;
-  project: Project;
   status: TaskStatus;
-  priority: TaskPriority;
-  assignees: User[];
-  assignee: User | string;
-  watchers?: User[];
-  dueDate: Date;
-  completedAt: Date;
-  estimatedHours: number;
-  actualHours: number;
-  tags: string[];
-  subtasks?: Subtask[];
-  comments: Comment[];
-  attachments?: Attachment[];
-  createdBy: User | string;
-  isArchived: boolean;
+  project: Project;
   createdAt: Date;
-  updateAt: Date;
+  updatedAt: Date;
+  isArchived: boolean;
+  dueDate: Date;
+  priority: TaskPriority;
+  assignee: User | string;
+  createdBy: User | string;
+  assignees: User[];
+  subtasks?: Subtask[];
+  watchers?: User[];
+  attachments?: Attachment[];
 }
 
 export interface MemberProps {

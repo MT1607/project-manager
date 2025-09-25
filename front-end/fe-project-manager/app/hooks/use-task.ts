@@ -193,3 +193,10 @@ export const useArchiveTaskMutation = () => {
     },
   });
 };
+
+export const useGetMyTasksQuery = () => {
+  return useQuery({
+    queryKey: ['my-tasks', 'user'],
+    queryFn: () => getData('/tasks/my-tasks'),
+  });
+};
