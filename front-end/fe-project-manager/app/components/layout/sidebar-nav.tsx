@@ -30,15 +30,11 @@ const SidebarNav = ({
         const Icon = el.icon;
         const isActive = location.pathname.includes(el.href);
         const handleClick = () => {
-          if (el.href === '/workspaces') {
-            navigate(el.href);
-          } else if (currentWorkspace && currentWorkspace._id) {
-            navigate(`${el.href}?workspaceId=${currentWorkspace._id}`);
-          } else {
-            // If no workspace is selected, navigate to dashboard without workspaceId
-            // This will show the "No Workspace Selected" message
-            navigate(el.href);
+          if (el.href === '/dashboard' && currentWorkspace?._id) {
+            return navigate(`${el.href}?workspaceId=${currentWorkspace._id}`);
           }
+
+          navigate(el.href);
         };
 
         return (

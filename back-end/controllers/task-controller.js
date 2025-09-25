@@ -532,6 +532,20 @@ const achievedTask = async (req, res) => {
   }
 };
 
+const getMyTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({ assignees: { $in: [req.user._id] } })
+      .populate('project', 'title workspace')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
 export {
   createTask,
   getTaskById,
@@ -546,4 +560,5 @@ export {
   addComment,
   addWatcherTask,
   achievedTask,
+  getMyTasks,
 };

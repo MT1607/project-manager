@@ -18,6 +18,7 @@ import {
   addComment,
   addWatcherTask,
   achievedTask,
+  getMyTasks,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -103,6 +104,8 @@ router.put(
   }),
   updateSubTask
 );
+
+router.get('/my-tasks', authMiddleware, getMyTasks);
 
 router.get(
   '/:taskId',
