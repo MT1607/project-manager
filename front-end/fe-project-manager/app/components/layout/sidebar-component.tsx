@@ -50,11 +50,11 @@ const SidebarComponent = ({ currentWorkspace }: { currentWorkspace: Workspace | 
       href: '/archived',
       icon: CheckCircle2,
     },
-    {
-      title: 'Settings',
-      href: '/settings',
-      icon: Settings,
-    },
+    // {
+    //   title: 'Settings',
+    //   href: '/settings',
+    //   icon: Settings,
+    // },
   ];
   return (
     <div
