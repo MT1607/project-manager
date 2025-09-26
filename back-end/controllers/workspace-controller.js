@@ -162,7 +162,7 @@ const getWorkspaceStats = async (req, res) => {
     // populate
 
     for (const project of projects) {
-      for (const task in project.tasks) {
+      for (const task of project.tasks) {
         const taskDate = new Date(task.updatedAt);
 
         const dayInDate = last7Days.findIndex(
@@ -204,16 +204,9 @@ const getWorkspaceStats = async (req, res) => {
     ];
 
     for (const project of projects) {
-      switch (project.status) {
-        case 'Completed':
-          projectStatusData[0].value++;
-          break;
-        case 'In Progress':
-          projectStatusData[1].value++;
-          break;
-        case 'Planning':
-          projectStatusData[2].value++;
-          break;
+      const statusData = projectStatusData.find((item) => item.name === project.status);
+      if (statusData) {
+        statusData.value++;
       }
     }
 
