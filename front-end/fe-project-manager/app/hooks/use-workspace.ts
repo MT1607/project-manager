@@ -65,6 +65,14 @@ const useAcceptGenerateInviteMutation = () => {
   });
 };
 
+const useGetArchivedTasks = (workspaceId: string) => {
+  return useQuery({
+    queryKey: ['workspace', workspaceId, 'archived-tasks'],
+    queryFn: async () => getData(`/tasks/workspace/${workspaceId}/archived`),
+    enabled: !!workspaceId,
+  });
+};
+
 export {
   useCreateWorkspace,
   useGetWorkspace,
@@ -74,4 +82,5 @@ export {
   useAcceptGenerateInviteMutation,
   useInviteMemberMutation,
   useAcceptInviteByTokenMutation,
+  useGetArchivedTasks,
 };

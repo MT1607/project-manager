@@ -546,6 +546,52 @@ const getMyTasks = async (req, res) => {
     });
   }
 };
+
+const getArchivedTasks = async (req, res) => {
+  try {
+    const { workspaceId } = req.params;
+
+    // Verify workspace exists and user is a member
+    const workspace = await Workspace.findById(workspaceId);
+    if (!workspace) {
+      return res.status(404).json({ message: 'Workspace not found' });
+    }
+
+    const isMember = workspace.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: 'You are not a member of this workspace',
+      });
+    }
+
+    // Get all archived tasks in the workspace
+    const archivedTasks = await Task.find({
+      isArchived: true,
+    })
+      .populate('project', 'title workspace')
+      .populate('assignees', 'name email profilePicture')
+      .populate('createdBy', 'name email')
+      .sort({ updatedAt: -1 });
+
+    // Filter tasks that belong to the specified workspace
+    const workspaceArchivedTasks = archivedTasks.filter(task => 
+      task.project && task.project.workspace && task.project.workspace.toString() === workspaceId
+    );
+
+    return res.status(200).json({
+      tasks: workspaceArchivedTasks,
+      count: workspaceArchivedTasks.length,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: 'Internal server error',
+    });
+  }
+};
 export {
   createTask,
   getTaskById,
@@ -561,4 +607,5 @@ export {
   addWatcherTask,
   achievedTask,
   getMyTasks,
+  getArchivedTasks,
 };

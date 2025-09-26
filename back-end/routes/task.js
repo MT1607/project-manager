@@ -19,6 +19,7 @@ import {
   addWatcherTask,
   achievedTask,
   getMyTasks,
+  getArchivedTasks,
 } from '../controllers/task-controller.js';
 
 const router = express.Router();
@@ -155,6 +156,15 @@ router.post(
     params: z.object({ taskId: z.string() }),
   }),
   achievedTask
+);
+
+router.get(
+  '/workspace/:workspaceId/archived',
+  authMiddleware,
+  validateRequest({
+    params: z.object({ workspaceId: z.string() }),
+  }),
+  getArchivedTasks
 );
 
 export default router;
