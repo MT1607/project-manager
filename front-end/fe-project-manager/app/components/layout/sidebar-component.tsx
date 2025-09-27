@@ -2,6 +2,7 @@ import type { Workspace } from '@/types';
 import { useAuth } from '@/provider/auth-context';
 import { useState } from 'react';
 import {
+  Banknote,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
@@ -50,11 +51,11 @@ const SidebarComponent = ({ currentWorkspace }: { currentWorkspace: Workspace | 
       href: '/archived',
       icon: CheckCircle2,
     },
-    // {
-    //   title: 'Settings',
-    //   href: '/settings',
-    //   icon: Settings,
-    // },
+    {
+      title: 'License',
+      href: '/license',
+      icon: Banknote,
+    },
   ];
   return (
     <div
