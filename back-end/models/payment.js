@@ -1,10 +1,9 @@
-// models/PaymentLog.js
-const mongoose = require('mongoose');
+import mongoose, { Schema } from 'mongoose';
 
-const paymentLog = new mongoose.Schema(
+const paymentLogSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -30,4 +29,5 @@ const paymentLog = new mongoose.Schema(
   { timestamps: true }
 ); // Thêm createdAt/updatedAt mặc định
 
-module.exports = mongoose.model('PaymentLog', paymentLog);
+const PaymentLog = mongoose.model('PaymentLog', paymentLogSchema);
+export default PaymentLog;

@@ -29,5 +29,6 @@ export default [
   ]),
 
   route('workspace-invite/:workspaceId', 'routes/dashboard/workspace/workspace-invite.tsx'),
+  route('payment/return', 'routes/payment/payment-return.tsx'),
   layout('routes/user/user-layout.tsx', [route('user/profile', 'routes/user/profile.tsx')]),
 ] satisfies RouteConfig;

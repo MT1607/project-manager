@@ -7,7 +7,7 @@ import License from '../models/license.js';
 dotenv.config();
 
 const createPayment = async (req, res) => {
-  const { userId } = req.user._id;
+  const userId = req.user._id;
   if (!userId) {
     return res.status(400).send({ message: 'User not found' });
   }
@@ -17,7 +17,7 @@ const createPayment = async (req, res) => {
   const extraData = JSON.stringify({ userId });
 
   try {
-    const rawHash = rawHashCreatePayment(orderId);
+    const rawHash = rawHashCreatePayment(orderId, extraData);
     const signature = createSignature(rawHash);
 
     const requestBody = {
@@ -74,6 +74,7 @@ const handleIPN = async (req, res) => {
     data.orderType,
     data.partnerCode,
     data.payloadType,
+    data.requestId,
     responseTime,
     resultCode,
     transId
@@ -87,8 +88,8 @@ const handleIPN = async (req, res) => {
 
   try {
     // 2. LẤY USER ID VÀ TÌM LOG GIAO DỊCH
-    // const decodedExtraData = JSON.parse(Buffer.from(extraData, 'base64').toString('ascii'));
-    const userId = req.user._id;
+    const decodedExtraData = JSON.parse(Buffer.from(extraData, 'base64').toString('ascii'));
+    const userId = decodedExtraData.userId;
     const paymentLog = await PaymentLog.findOne({ orderId: orderId });
 
     if (!paymentLog) {
@@ -100,7 +101,7 @@ const handleIPN = async (req, res) => {
     if (resultCode === 0 && paymentLog.status === 'PENDING') {
       // a. CẬP NHẬT TRẠNG THÁI LOG THANH TOÁN
       paymentLog.status = 'SUCCESS';
-      await PaymentLog.save();
+      await paymentLog.save();
 
       // b. CẬP NHẬT LICENSE PRO CHO USER
       const expiryDate = new Date();
@@ -119,7 +120,7 @@ const handleIPN = async (req, res) => {
     // 4. XỬ LÝ KHI THANH TOÁN THẤT BẠI (resultCode != 0)
     else if (resultCode !== 0) {
       paymentLog.status = 'FAILURE';
-      await PaymentLog.save();
+      await paymentLog.save();
       console.log(`[IPN FAILURE] Order ID: ${orderId}. Mã lỗi: ${resultCode}.`);
     }
 
@@ -131,3 +132,5 @@ const handleIPN = async (req, res) => {
     res.status(204).end();
   }
 };
+
+export { createPayment, handleIPN };

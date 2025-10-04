@@ -16,10 +16,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { useCreateMomoPayment } from '@/hooks/use-payment';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 
 export default function LicensePage() {
   const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const navigate = useNavigate();
+  const createMomoPayment = useCreateMomoPayment();
+
+  // const handleMoMoPayment = async () => {
+  //   setIsProcessingPayment(true);
+  //   try {
+  //     const result = await createMomoPayment.mutateAsync() as any;
+      
+  //     if (result.data && result.data.includes('https://')) {
+  //       // Redirect to MoMo payment URL
+  //       window.location.href = result.data;
+  //     } else {
+  //       console.error('Payment URL not received:', result);
+  //       alert('Failed to initiate payment. Please try again.');
+  //     }
+  //   } catch (error) {
+  //     console.error('Payment error:', error);
+  //     alert('An error occurred while processing payment. Please try again.');
+  //   } finally {
+  //     setIsProcessingPayment(false);
+  //     setIsPaymentOpen(false);
+  //   }
+  // };
 
   return (
     <div className='space-y-8 2xl:space-y-12'>
@@ -64,6 +90,17 @@ export default function LicensePage() {
                   </DialogHeader>
 
                   <div className='grid gap-4'>
+                    <Card 
+                      className='cursor-pointer hover:border-primary' 
+                      onClick={()=>createMomoPayment}
+                      style={{ opacity: isProcessingPayment ? 0.6 : 1 }}
+                    >
+                      <CardHeader>
+                        <CardTitle className='text-base'>MoMo Wallet</CardTitle>
+                        <CardDescription>Pay securely with your MoMo wallet</CardDescription>
+                      </CardHeader>
+                    </Card>
+
                     <Card className='cursor-pointer hover:border-primary' onClick={() => setIsPaymentOpen(false)}>
                       <CardHeader>
                         <CardTitle className='text-base'>Credit / Debit Card</CardTitle>

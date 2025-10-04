@@ -26,6 +26,10 @@ app.get('/', async (req, res) => {
     })
 })
 
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // localhost:5000/api-v1
 app.use("/api-v1", routes);
 

@@ -7,7 +7,7 @@ const createSignature = (rawData) => {
   return crypto.createHmac('sha256', process.env.MOMO_SECRET_KEY).update(rawData).digest('hex');
 };
 
-const rawHashCreatePayment = (orderId) => {
+const rawHashCreatePayment = (orderId, extraData) => {
   return `accessKey=${process.env.MOMO_ACCESS_KEY}&amount=${1}&extraData=${Buffer.from(extraData).toString('base64')}&ipnUrl=${process.env.IPN_URL}&orderId=${orderId}&orderInfo=Mua License Pro 30 ngay&partnerCode=${process.env.MOMO_PARTNER_CODE}&redirectUrl=${process.env.REDIRECT_URL}&requestId=${orderId}&requestType=captureWallet`;
 };
 
@@ -19,6 +19,7 @@ const rawHashHandleIPN = (
   orderType,
   partnerCode,
   payType,
+  requestId,
   responseTime,
   resultCode,
   transId
