@@ -49,7 +49,7 @@ jobs:
       # Step 6: Tạo file deploy.sh để thực thi trên server
       - name: Create deploy script
         run: |
-          echo '#!/bin/bash' > deploy.sh
+          echo '#!/bin/bash' >> deploy.sh
           echo 'set -e' >> deploy.sh # Dừng ngay khi có lỗi
           echo '' >> deploy.sh
           echo '# Go to folder server' >> deploy.sh
