@@ -69,10 +69,9 @@ jobs:
           echo '' >> deploy.sh
           echo 'echo "✅ Deployment completed successfully!"' >> deploy.sh
 
-      - name: Add server to known_hosts
-        run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      # BƯỚC GỠ LỖI: Liệt kê các file trong thư mục làm việc của Runner
+      - name: List files in workspace
+        run: ls -a
 
       # Step 7: Sao chép các file cấu hình cần thiết đến server
       - name: Copy files to server via SCP
