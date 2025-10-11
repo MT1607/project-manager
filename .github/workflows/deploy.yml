@@ -69,6 +69,11 @@ jobs:
           echo '' >> deploy.sh
           echo 'echo "✅ Deployment completed successfully!"' >> deploy.sh
 
+      - name: Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
       # Step 7: Sao chép các file cấu hình cần thiết đến server
       - name: Copy files to server via SCP
         uses: appleboy/scp-action@v0.1.4
