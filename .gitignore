@@ -189,3 +189,5 @@ Thumbs.db
 .env.prod
 .nginx.prod.conf
 deploy_setup.sh
+docker-compose.prod.yml
+nginx.conf
