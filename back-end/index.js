@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';
+
 dotenv.config();
 
 const app = express();
@@ -12,11 +12,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', "Authorization"],
 }));
 app.use(morgan('dev'));
-
-//connect db
-mongoose.connect(process.env.MONGODB_URI)
-    .then(()=>{console.log('MongoDB Connected')})
-    .catch((err)=>{console.log("Failed connect to DB:", err)});
 
 app.use(express.json());
 

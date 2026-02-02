@@ -1,11 +1,9 @@
-import User from '../models/user.js';
+import { createUser, findUserByEmail, findUserById, updateUser } from '../models/user.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Verification } from '../models/verification.js';
 import sendEmail from '../libs/send-email.js';
 import aj from '../libs/arcjet.js';
-import { token } from 'morgan';
-import user from '../models/user.js';
 import License from '../models/license.js';
 
 const registerUser = async (req, res) => {
@@ -20,7 +18,7 @@ const registerUser = async (req, res) => {
       res.end(JSON.stringify({ message: 'Invalid email address' }));
     }
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: `User with email ${email} already exist` });
     }
@@ -28,7 +26,7 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
 
-    const newUser = await User.create({
+    const newUser = await createUser({
       email,
       password: hashPassword,
       name: name,
@@ -36,7 +34,7 @@ const registerUser = async (req, res) => {
 
     const verifiedToken = jwt.sign(
       {
-        userId: newUser._id,
+        userId: newUser.$id,
         key: 'email-verification',
       },
       `${process.env.JWT_SECRET}`,
@@ -44,7 +42,7 @@ const registerUser = async (req, res) => {
     );
 
     await Verification.create({
-      userId: newUser._id,
+      userId: newUser.$id,
       token: verifiedToken,
       expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
     });
@@ -72,30 +70,30 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await findUserByEmail(email);
     if (!user) {
       return res.status(400).json({ message: `User with email ${email} does not exist` });
     }
 
     //TODO: check email is verified
     if (!user.isEmailVerified) {
-      const existingVerification = await Verification.findOne({ userId: user._id });
+      const existingVerification = await Verification.findOne({ userId: user.$id });
       if (existingVerification && existingVerification.expiresAt > new Date()) {
         return res
           .status(400)
           .json({ message: `Email is not verified. Please check and verify your email` });
       } else {
-        await Verification.findByIdAndDelete(existingVerification._id);
+        await Verification.findByIdAndDelete(existingVerification.$id);
         const verifiedToken = jwt.sign(
           {
-            userId: user._id,
+            userId: user.$id,
             key: 'email-verification',
           },
           `${process.env.JWT_SECRET}`,
           { expiresIn: '1h' }
         );
         await Verification.create({
-          userId: user._id,
+          userId: user.$id,
           token: verifiedToken,
           expiresAt: new Date(Date.now() + 1 * 60 * 60 * 1000),
         });
@@ -121,13 +119,12 @@ const loginUser = async (req, res) => {
       return res.status(400).json({ message: `Password is incorrect` });
     }
 
-    const token = jwt.sign({ userId: user._id, key: 'login' }, `${process.env.JWT_SECRET}`, {
+    const token = jwt.sign({ userId: user.$id, key: 'login' }, `${process.env.JWT_SECRET}`, {
       expiresIn: '7d',
     });
-    user.lastLogin = new Date();
-    await user.save();
+    await updateUser(user.$id, { lastLogin: new Date() });
 
-    const userData = user.toObject();
+    const userData = { ...user };
     delete userData.password;
 
     res.status(201).json({ message: 'Login successfully.', token, user: userData });
@@ -152,21 +149,18 @@ const verifyEmail = async (req, res) => {
       return res.status(401).json({ message: `Unauthorized` });
     }
 
-    const verification = await Verification.findOne({
-      userId,
-      token,
-    });
+    const verification = await Verification.findByToken(token);
 
-    if (!verification) {
+    if (!verification || verification.userId !== userId) {
       return res.status(401).json({ message: `Unauthorized` });
     }
 
-    const isTokenExpired = verification.expiresAt < new Date();
+    const isTokenExpired = new Date(verification.expiresAt) < new Date();
     if (isTokenExpired) {
       return res.status(401).json({ message: `Token expired` });
     }
 
-    const user = await User.findById(userId);
+    const user = await findUserById(userId);
     if (!user) {
       return res.status(401).json({ message: `Unauthorized` });
     }
@@ -175,13 +169,12 @@ const verifyEmail = async (req, res) => {
       return res.status(401).json({ message: `Email verification already exist` });
     }
 
-    user.isEmailVerified = true;
-    await user.save();
+    await updateUser(user.$id, { isEmailVerified: true });
 
-    await Verification.findByIdAndDelete(verification._id);
+    await Verification.findByIdAndDelete(verification.$id);
 
     await License.create({
-      userId: user._id,
+      userId: user.$id,
     });
 
     res.status(200).json({ message: `Email verified successfully` });
@@ -194,7 +187,7 @@ const verifyEmail = async (req, res) => {
 const resetPasswordRequest = async (req, res) => {
   try {
     const { email } = req.body;
-    const user = await User.findOne({ email });
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return res.status(400).json({ message: `User not found` });
@@ -205,20 +198,20 @@ const resetPasswordRequest = async (req, res) => {
     }
 
     const existingVerification = await Verification.findOne({
-      userId: user._id,
+      userId: user.$id,
     });
 
-    if (existingVerification && existingVerification.expiresAt > new Date()) {
+    if (existingVerification && new Date(existingVerification.expiresAt) > new Date()) {
       return res.status(400).json({ message: `Reset password request already send` });
     }
 
-    if (existingVerification && existingVerification.expiresAt < new Date()) {
-      await Verification.findByIdAndDelete(existingVerification._id);
+    if (existingVerification && new Date(existingVerification.expiresAt) < new Date()) {
+      await Verification.findByIdAndDelete(existingVerification.$id);
     }
 
     const resetPasswordToken = jwt.sign(
       {
-        userId: user._id,
+        userId: user.$id,
         key: 'reset-password',
       },
       process.env.JWT_SECRET,
@@ -226,7 +219,7 @@ const resetPasswordRequest = async (req, res) => {
     );
 
     await Verification.create({
-      userId: user._id,
+      userId: user.$id,
       token: resetPasswordToken,
       expiresAt: new Date(Date.now() + 15 * 60 * 1000),
     });
@@ -261,20 +254,17 @@ const verifyResetPasswordAndResetPassword = async (req, res) => {
       return res.status(401).json({ message: `Unauthorized` });
     }
 
-    const verification = await Verification.findOne({
-      userId,
-      token,
-    });
-    if (!verification) {
+    const verification = await Verification.findByToken(token);
+    if (!verification || verification.userId !== userId) {
       return res.status(401).json({ message: `Unauthorized` });
     }
 
-    const isTokenExpires = verification.expiresAt > new Date();
+    const isTokenExpires = new Date(verification.expiresAt) > new Date();
     if (!isTokenExpires) {
       return res.status(401).json({ message: `Token expired` });
     }
 
-    const user = await User.findById(userId);
+    const user = await findUserById(userId);
     if (!user) {
       return res.status(401).json({ message: `User not found` });
     }
@@ -286,10 +276,9 @@ const verifyResetPasswordAndResetPassword = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(newPassword, salt);
 
-    user.password = hashPassword;
-    await user.save();
+    await updateUser(user.$id, { password: hashPassword });
 
-    await Verification.findByIdAndDelete(verification._id);
+    await Verification.findByIdAndDelete(verification.$id);
     res.status(200).json({ message: `Reset password successfully` });
   } catch (e) {
     res.status(500).json({ message: 'Internal error' });

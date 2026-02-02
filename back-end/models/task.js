@@ -1,60 +1,59 @@
-import mongoose, { Schema } from 'mongoose';
+import { databases } from '../libs/appwrite.js';
 
-export const taskSchema = new Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    description: {
-      type: String,
-      trim: true,
-    },
-    project: {
-      type: Schema.Types.ObjectId,
-      ref: 'Project',
-      required: true,
-    },
-    status: {
-      type: String,
-      enum: ['To Do', 'In Progress', 'Review', 'Done'],
-    },
-    priority: {
-      type: String,
-      enum: ['Low', 'Medium', 'High'],
-      default: 'Medium',
-    },
-    assignees: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    watchers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    dueDate: { type: Date },
-    completedAt: { type: Date },
-    estimatedHours: { type: Number, min: 0 },
-    actualHours: { type: Number, min: 0 },
-    tags: [{ type: String }],
-    subtasks: [
-      {
-        title: { type: String, required: true },
-        completed: { type: Boolean, default: false },
-        createAt: { type: Date, default: Date.now },
-      },
-    ],
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }],
-    attachments: [
-      {
-        fileName: { type: String, required: true },
-        fileUrl: { type: String, required: true },
-        fileType: { type: String },
-        fileSize: { type: Number },
-        uploadBy: { type: Schema.Types.ObjectId, ref: 'User' },
-        uploadAt: { type: Date, default: Date.now },
-      },
-    ],
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    isArchived: { type: Boolean, default: false },
-  },
-  { timestamps: true }
-);
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID || 'prm-db';
+const COLLECTION_ID = 'tasks';
 
-const Task = mongoose.model('Task', taskSchema);
-export default Task;
+export const createTask = async (data) => {
+  try {
+    const doc = await databases.createDocument(DATABASE_ID, COLLECTION_ID, 'unique()', data);
+    return doc;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findTaskById = async (id) => {
+  try {
+    const doc = await databases.getDocument(DATABASE_ID, COLLECTION_ID, id);
+    return doc;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findTasksByProject = async (projectId) => {
+  try {
+    const docs = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      `project=${projectId}`
+    ]);
+    return docs.documents;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateTask = async (id, updates) => {
+  try {
+    const doc = await databases.updateDocument(DATABASE_ID, COLLECTION_ID, id, updates);
+    return doc;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteTask = async (id) => {
+  try {
+    await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default {
+  create: createTask,
+  findById: findTaskById,
+  findByProject: findTasksByProject,
+  update: updateTask,
+  delete: deleteTask
+};

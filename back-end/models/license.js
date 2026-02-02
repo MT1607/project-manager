@@ -1,13 +1,29 @@
-import mongoose, { Schema } from 'mongoose';
+import { databases } from '../libs/appwrite.js';
 
-const licenseSchema = new Schema(
-  {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    type: { type: String, default: 'free' },
-    expiredDate: { type: Date },
-  },
-  { timestamps: true }
-);
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID || 'prm-db';
+const COLLECTION_ID = 'licenses';
 
-const License = mongoose.model('License', licenseSchema);
-export default License;
+export const createLicense = async (data) => {
+  try {
+    const doc = await databases.createDocument(DATABASE_ID, COLLECTION_ID, 'unique()', data);
+    return doc;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findLicenseByUserId = async (userId) => {
+  try {
+    const docs = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      `userId=${userId}`
+    ]);
+    return docs.documents[0] || null;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default {
+  create: createLicense,
+  findOne: findLicenseByUserId
+};

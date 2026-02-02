@@ -1,30 +1,59 @@
-import mongoose, {Schema} from "mongoose";
+import { databases } from '../libs/appwrite.js';
 
-export const userSchema = new Schema({
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowercase: true,
-    },
-    password: {
-        type: String,
-        required: true,
-        select: false,
-    },
-    name: {
-        type: String,
-        required: true,
-        trim: true,
-    },
-    profilePicture: {type: String},
-    isEmailVerified: {type: Boolean, default: false},
-    lastLogin: {type: Date},
-    is2FAEnable: {type: Boolean, default: false},
-    twoFAOtp: {type: String, select: false},
-    twoFAOtpExpires: {type: String, select: false},
-}, {timestamps: true});
+const DATABASE_ID = process.env.APPWRITE_DATABASE_ID || 'prm-db';
+const COLLECTION_ID = 'users';
 
-const User = mongoose.model('User', userSchema);
-export default User;
+export const createUser = async (userData) => {
+  try {
+    const user = await databases.createDocument(DATABASE_ID, COLLECTION_ID, 'unique()', userData);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findUserByEmail = async (email) => {
+  try {
+    const users = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      `email=${email}`
+    ]);
+    return users.documents[0] || null;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const findUserById = async (id) => {
+  try {
+    const user = await databases.getDocument(DATABASE_ID, COLLECTION_ID, id);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateUser = async (id, updates) => {
+  try {
+    const user = await databases.updateDocument(DATABASE_ID, COLLECTION_ID, id, updates);
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteUser = async (id) => {
+  try {
+    await databases.deleteDocument(DATABASE_ID, COLLECTION_ID, id);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default {
+  createUser,
+  findUserByEmail,
+  findUserById,
+  updateUser,
+  deleteUser
+};
