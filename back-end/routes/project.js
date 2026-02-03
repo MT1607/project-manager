@@ -1,40 +1,55 @@
-import express from 'express';
-import authMiddleware from '../middleware/auth-middleware.js';
-import { validateRequest } from 'zod-express-middleware';
+import { AutoRouter } from 'itty-router';
+import { z } from 'zod'; // Cần import z để định nghĩa schema inline cho params
+import { wrap } from '../libs/utils.js'; 
 import { projectSchema } from '../libs/validate-schema.js';
-import { string, z } from 'zod';
 import {
   createProject,
   getProjectDetails,
   getProjectTasks,
 } from '../controllers/project-controller.js';
 
-const router = express.Router();
+// Khởi tạo Router với base path là /projects
+const router = AutoRouter({ base: '/projects' });
 
+// 1. Create Project
+// POST /projects/:workspaceId/create-project
 router.post(
   '/:workspaceId/create-project',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ workspaceId: z.string() }),
-    body: projectSchema,
-  }),
-  createProject
+  (req, ctx) => wrap(
+    createProject, 
+    {
+      // Schema validate
+      params: z.object({ workspaceId: z.string() }),
+      body: projectSchema,
+    }, 
+    true // true = Yêu cầu đăng nhập (thay thế authMiddleware)
+  )(req, ctx)
 );
 
+// 2. Get Project Details
+// GET /projects/:projectId
 router.get(
   '/:projectId',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ projectId: z.string() }),
-  }),
-  getProjectDetails
+  (req, ctx) => wrap(
+    getProjectDetails,
+    {
+      params: z.object({ projectId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// 3. Get Project Tasks
+// GET /projects/:projectId/tasks
 router.get(
   '/:projectId/tasks',
-  authMiddleware,
-  validateRequest({ params: z.object({ projectId: z.string() }) }),
-  getProjectTasks
+  (req, ctx) => wrap(
+    getProjectTasks,
+    {
+      params: z.object({ projectId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
 export default router;

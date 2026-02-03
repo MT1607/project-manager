@@ -1,9 +1,7 @@
-import express from 'express';
-
+import { AutoRouter } from 'itty-router';
 import { z } from 'zod';
-import { validateRequest } from 'zod-express-middleware';
+import { wrap } from '../libs/utils.js'; // Hàm wrap xử lý logic thay thế express
 import { taskSchema } from '../libs/validate-schema.js';
-import authMiddleware from '../middleware/auth-middleware.js';
 import {
   createTask,
   getTaskById,
@@ -22,149 +20,196 @@ import {
   getArchivedTasks,
 } from '../controllers/task-controller.js';
 
-const router = express.Router();
+// Khởi tạo Router cho nhánh /tasks
+const router = AutoRouter({ base: '/tasks' });
 
+// --- CREATE ---
+
+// POST /tasks/:projectId/create-task
 router.post(
   '/:projectId/create-task',
-  authMiddleware,
-  validateRequest({
-    params: z.object({
-      projectId: z.string(),
-    }),
-    body: taskSchema,
-  }),
-  createTask
+  (req, ctx) => wrap(
+    createTask,
+    {
+      params: z.object({ projectId: z.string() }),
+      body: taskSchema,
+    },
+    true // Require Auth
+  )(req, ctx)
 );
 
+// --- UPDATE TASK FIELDS ---
+
+// PUT /tasks/:taskId/title
 router.put(
   '/:taskId/title',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ title: z.string() }),
-  }),
-  updateTaskTitle
+  (req, ctx) => wrap(
+    updateTaskTitle,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ title: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// PUT /tasks/:taskId/description
 router.put(
   '/:taskId/description',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ description: z.string() }),
-  }),
-  updateTaskDescription
+  (req, ctx) => wrap(
+    updateTaskDescription,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ description: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// PUT /tasks/:taskId/status
 router.put(
   '/:taskId/status',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ status: z.string() }),
-  }),
-  updateTaskStatus
+  (req, ctx) => wrap(
+    updateTaskStatus,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ status: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// PUT /tasks/:taskId/assignees
 router.put(
   '/:taskId/assignees',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ assignees: z.array(z.string()) }),
-  }),
-  updateTaskAssignees
+  (req, ctx) => wrap(
+    updateTaskAssignees,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ assignees: z.array(z.string()) }),
+    },
+    true
+  )(req, ctx)
 );
 
+// PUT /tasks/:taskId/priority
 router.put(
   '/:taskId/priority',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ priority: z.string() }),
-  }),
-  updateTaskPriority
+  (req, ctx) => wrap(
+    updateTaskPriority,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ priority: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// --- SUBTASKS ---
+
+// POST /tasks/:taskId/add-subtask
 router.post(
   '/:taskId/add-subtask',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ title: z.string().min(1) }),
-  }),
-  addSubtask
+  (req, ctx) => wrap(
+    addSubtask,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ title: z.string().min(1) }),
+    },
+    true
+  )(req, ctx)
 );
 
+// PUT /tasks/:taskId/update-subtask/:subTaskId
 router.put(
   '/:taskId/update-subtask/:subTaskId',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string(), subTaskId: z.string() }),
-    body: z.object({ completed: z.boolean() }),
-  }),
-  updateSubTask
+  (req, ctx) => wrap(
+    updateSubTask,
+    {
+      params: z.object({ taskId: z.string(), subTaskId: z.string() }),
+      body: z.object({ completed: z.boolean() }),
+    },
+    true
+  )(req, ctx)
 );
 
-router.get('/my-tasks', authMiddleware, getMyTasks);
+// --- QUERIES & OTHERS ---
 
+// GET /tasks/my-tasks
+// (Không có validation schema vì chỉ cần lấy user từ token)
+router.get('/my-tasks', (req, ctx) => wrap(getMyTasks, null, true)(req, ctx));
+
+// GET /tasks/:taskId
 router.get(
   '/:taskId',
-  authMiddleware,
-  validateRequest({
-    params: z.object({
-      taskId: z.string(),
-    }),
-  }),
-  getTaskById
+  (req, ctx) => wrap(
+    getTaskById,
+    {
+      params: z.object({ taskId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// GET /tasks/:resourceId/activity
 router.get(
   '/:resourceId/activity',
-  authMiddleware,
-  validateRequest({
-    params: z.object({
-      resourceId: z.string(),
-    }),
-  }),
-  getActivitiesByResourceId
+  (req, ctx) => wrap(
+    getActivitiesByResourceId,
+    {
+      params: z.object({ resourceId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// POST /tasks/:taskId/comments
 router.post(
   '/:taskId/comments',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-    body: z.object({ text: z.string().min(1) }),
-  }),
-  addComment
+  (req, ctx) => wrap(
+    addComment,
+    {
+      params: z.object({ taskId: z.string() }),
+      body: z.object({ text: z.string().min(1) }),
+    },
+    true
+  )(req, ctx)
 );
 
+// POST /tasks/:taskId/watcher
 router.post(
   '/:taskId/watcher',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-  }),
-  addWatcherTask
+  (req, ctx) => wrap(
+    addWatcherTask,
+    {
+      params: z.object({ taskId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// POST /tasks/:taskId/achieved
 router.post(
   '/:taskId/achieved',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ taskId: z.string() }),
-  }),
-  achievedTask
+  (req, ctx) => wrap(
+    achievedTask,
+    {
+      params: z.object({ taskId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
+// GET /tasks/workspace/:workspaceId/archived
 router.get(
   '/workspace/:workspaceId/archived',
-  authMiddleware,
-  validateRequest({
-    params: z.object({ workspaceId: z.string() }),
-  }),
-  getArchivedTasks
+  (req, ctx) => wrap(
+    getArchivedTasks,
+    {
+      params: z.object({ workspaceId: z.string() }),
+    },
+    true
+  )(req, ctx)
 );
 
 export default router;
