@@ -23,8 +23,6 @@ async function connectToDatabase() {
 }
 
 export default async ({ req, res, log, error }) => {
-    // 1. Chuẩn bị dữ liệu cho Arcjet
-    // Appwrite có thể gửi body dạng string hoặc object, cần parse an toàn
     let bodyData = {};
     try {
         if (req.body) {
@@ -33,9 +31,6 @@ export default async ({ req, res, log, error }) => {
     } catch (e) {
         log("Không parse được body json, bỏ qua check email");
     }
-
-    // 2. Gọi Arcjet Protect
-    // Bắt buộc phải truyền 'requested' (cho TokenBucket) và 'email' (cho ValidateEmail)
     try {
         const decision = await aj.protect(req, {
             requested: 1, // Mỗi request tốn 1 token
@@ -52,23 +47,18 @@ export default async ({ req, res, log, error }) => {
             }, 403);
         }
     } catch (ajError) {
-        // Xử lý trường hợp Arcjet cấu hình sai hoặc thiếu props
         error("Arcjet Error: " + ajError.message);
-        // Tùy chọn: Có thể return lỗi hoặc cho qua (fail-open)
         return res.json({ message: "Security Check Failed", detail: ajError.message }, 500);
     }
 
-    // 3. Kết nối Database
     try {
         await connectToDatabase();
     } catch (dbError) {
         return res.json({ message: "Database Connection Failed" }, 500);
     }
 
-    // 4. Xử lý Routing (Express Shim)
     const { expressRes, responsePromise } = createExpressShim({ res, log, error });
     
-    // Gán lại body đã parse vào req để Router/Controller dùng luôn, đỡ parse lại
     req.body = bodyData;
 
     const context = {
