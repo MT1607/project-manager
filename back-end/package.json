@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon start",
-    "start": "node index.js"
+    "start": "node index.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "author": "gia son",
   "license": "ISC",
@@ -28,6 +30,7 @@
     "zod-express-middleware": "^1.4.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
   }
 }
