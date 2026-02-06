@@ -1,5 +1,5 @@
 import type {User} from "@/types";
-import React, {createContext, useEffect} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {useQueryClient} from "@tanstack/react-query";
 import {useLocation, useNavigate} from "react-router";
 import {publicRoutes} from "@/lib";
@@ -15,9 +15,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: { children: React.ReactNode }) => {
-    const [user, setUser] = React.useState(null);
-    const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [user, setUser] = useState<User | null>(null);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const queryClient = useQueryClient();
 
     const navigate = useNavigate();
@@ -80,7 +80,7 @@ export const AuthProvider = ({children}: { children: React.ReactNode }) => {
 }
 
 export const useAuth = () => {
-    const context = React.useContext(AuthContext);
+    const context = useContext(AuthContext);
     if (!context) {
         throw new Error('useAuth must be used within the AuthProvider');
     }
