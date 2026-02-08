@@ -10,6 +10,8 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import ReactQueryProvider from "@/provider/react-query-provider";
+import { useState, useEffect } from "react";
+import { pingBe } from "./lib/ping-be";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -51,6 +53,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  const [isBeReady, setIsBeReady] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkApi = async () => {
+      const result = await pingBe();
+      setIsBeReady(result);
+      console.log("Backend readiness:", result);
+    };
+    checkApi();
+  }, []);
+
+  if (isBeReady === null) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center space-y-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <p className="text-lg font-medium">Server is starting (Render Free Tier)...</p>
+      </div>
+    );
+  }
+
+  if (isBeReady === false) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center p-4 text-center">
+        <h1 className="text-2xl font-bold text-red-600">System is down</h1>
+        <p className="mt-2">Cannot connect to the server after 10 seconds. Please refresh the page.</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Try Again
+        </button>
+      </div>
+    );
+  }
+  
   return (
       <ReactQueryProvider>
         <Outlet />
