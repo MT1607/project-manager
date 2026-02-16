@@ -8,12 +8,12 @@ export const pingBe = async () => {
     console.log('🔍 Pinging backend at:', endpoint);
     
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // Tăng lên 30s
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // Tăng lên 30s
 
     try {
         const response = await axios.get(endpoint, {
             signal: controller.signal,
-            timeout: 30000, // Thêm timeout của axios
+            timeout: 60000, // Thêm timeout của axios
         });
         
         clearTimeout(timeoutId);
