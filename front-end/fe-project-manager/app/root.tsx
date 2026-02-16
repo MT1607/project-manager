@@ -77,7 +77,7 @@ export default function App() {
     return (
       <div className="h-screen flex flex-col items-center justify-center p-4 text-center">
         <h1 className="text-2xl font-bold text-red-600">System is down</h1>
-        <p className="mt-2">Cannot connect to the server after 10 seconds. Please refresh the page.</p>
+        <p className="mt-2">Cannot connect to the server after 60 seconds. Please refresh the page.</p>
         <button 
           onClick={() => window.location.reload()}
           className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
